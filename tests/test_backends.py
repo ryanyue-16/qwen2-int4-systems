@@ -2,7 +2,11 @@ import pytest
 import torch
 
 from qwen_int4.linear import QuantLinear
-from qwen_int4.quantization import PackingFormat, pack_int4
+from qwen_int4.quantization import (
+    PackingFormat,
+    pack_int4,
+    quantize_asymmetric_rtn,
+)
 
 
 def test_torch_and_lpu_functional_backends_match():
@@ -39,3 +43,21 @@ def test_unknown_backend_is_rejected():
     with pytest.raises(ValueError):
         layer.set_backend("environment-variable-magic")
 
+
+def test_torch_and_lpu_backends_match_asymmetric_zero_points():
+    torch.manual_seed(7)
+    layer = QuantLinear(8, 4, group_size=4, packing=PackingFormat.CANONICAL)
+    qweight, scales, zeros = quantize_asymmetric_rtn(
+        torch.randn(4, 8), group_size=4
+    )
+    layer.qweight.copy_(qweight.view_as(layer.qweight))
+    layer.scales.copy_(scales)
+    layer.zeros.copy_(zeros.view_as(layer.zeros))
+    values = torch.randn(2, 3, 8, dtype=torch.bfloat16)
+
+    layer.set_backend("torch")
+    reference = layer(values)
+    layer.set_backend("lpu")
+    actual = layer(values)
+
+    torch.testing.assert_close(actual, reference, rtol=0, atol=0)

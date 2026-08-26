@@ -10,6 +10,7 @@ from safetensors import safe_open
 from safetensors.torch import load_file
 
 from .quantization import PackingFormat
+from .export import AWQ_FORMAT_VERSION, AWQ_TRANSFORMED_SUFFIXES
 
 
 @dataclass(frozen=True)
@@ -66,8 +67,30 @@ def load_quantized_checkpoint(model: torch.nn.Module, path: str | Path) -> LoadR
             f"  shape_mismatches={mismatched}"
         )
 
+    metadata = checkpoint_metadata(path)
+    transformed_tensors: dict[str, torch.Tensor] = {}
+    if metadata.get("format_version") == AWQ_FORMAT_VERSION:
+        expected_transformed = {
+            key for key in expected if key.endswith(AWQ_TRANSFORMED_SUFFIXES)
+        }
+        checkpoint_transformed = {
+            key for key in checkpoint if key.endswith(AWQ_TRANSFORMED_SUFFIXES)
+        }
+        missing_transformed = expected_transformed - checkpoint_transformed
+        unexpected_transformed = checkpoint_transformed - expected_transformed
+        if missing_transformed or unexpected_transformed:
+            raise RuntimeError(
+                "AWQ transformed-state contract mismatch:\n"
+                f"  missing={sorted(missing_transformed)}\n"
+                f"  unexpected={sorted(unexpected_transformed)}"
+            )
+        transformed_tensors = {
+            key: checkpoint[key] for key in checkpoint_transformed
+        }
+
     quantized_tensors = {key: checkpoint[key] for key in checkpoint_quantized}
-    incompatible = model.load_state_dict(quantized_tensors, strict=False)
+    load_tensors = {**quantized_tensors, **transformed_tensors}
+    incompatible = model.load_state_dict(load_tensors, strict=False)
     unexpected_after_load = set(incompatible.unexpected_keys)
     if unexpected_after_load:
         raise RuntimeError(
@@ -78,12 +101,17 @@ def load_quantized_checkpoint(model: torch.nn.Module, path: str | Path) -> LoadR
         name for name, tensor in model.named_buffers()
         if name.endswith(".zeros") and torch.count_nonzero(tensor).item()
     ]
-    if nonzero_zero_points:
+    zero_point_contract = metadata.get("zero_point", "")
+    asymmetric_contracts = {
+        "canonical_signed_packed_per_group",
+        "asymmetric_canonical_signed_packed_per_group",
+    }
+    if nonzero_zero_points and zero_point_contract not in asymmetric_contracts:
         raise RuntimeError(
-            "non-zero zero-points found, but only symmetric quantization is implemented: "
+            "non-zero zero-points found without an asymmetric checkpoint contract: "
             + ", ".join(nonzero_zero_points)
         )
-    return LoadReport(len(quantized_tensors), len(checkpoint) - len(quantized_tensors))
+    return LoadReport(len(load_tensors), len(checkpoint) - len(load_tensors))
 
 
 def extract_non_quantized_state(hf_model: torch.nn.Module, target_model: torch.nn.Module) -> dict[str, torch.Tensor]:

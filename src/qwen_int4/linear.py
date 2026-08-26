@@ -33,7 +33,10 @@ class QuantLinear(nn.Module):
         # Zero initialization makes an accidental partial load deterministic.
         self.register_buffer("qweight", torch.zeros(out_features * in_features // 2, 1, dtype=torch.uint8))
         self.register_buffer("scales", torch.zeros(out_features, self.num_groups, dtype=torch.float16))
-        self.register_buffer("zeros", torch.zeros(out_features * self.num_groups // 2, 1, dtype=torch.uint8))
+        self.register_buffer(
+            "zeros",
+            torch.zeros((out_features * self.num_groups + 1) // 2, 1, dtype=torch.uint8),
+        )
         if bias:
             self.bias = nn.Parameter(torch.zeros(out_features, dtype=torch.bfloat16), requires_grad=False)
         else:
@@ -61,4 +64,3 @@ class QuantLinear(nn.Module):
             group_size=self.group_size,
             packing=self.packing,
         )
-

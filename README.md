@@ -193,6 +193,16 @@ ready, while the four-row NVIDIA result remains pending.
 
 See [Phase C unified quality evaluation](docs/phase-c-evaluation.md).
 
+## Canonical self-AWQ development
+
+Phase D has started with CPU-testable calibration, Qwen2-aware scale migration,
+recoverable scale and clipping searches, and a versioned asymmetric W4G128
+canonical export contract. The implementation is marked
+`awaiting_gpu_reference`; it is not yet a completed AWQ checkpoint or quality
+claim.
+
+See [Phase D canonical AWQ](docs/phase-d-canonical-awq.md).
+
 ## Inspect the checkpoint
 
 ```bash

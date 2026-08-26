@@ -36,6 +36,20 @@ performance number has been fabricated. See `docs/awq-reference.md`.
 The protocol is ready, but Phase C is not numerically complete while the Phase B
 reference and Phase D checkpoints are absent. See `docs/phase-c-evaluation.md`.
 
+## Phase D — Canonical self-AWQ
+
+- [x] Add memory-bounded sequential calibration primitives.
+- [x] Add Qwen2 Q/K/V, GQA V/O, and SwiGLU mappings.
+- [x] Add recoverable per-channel scale search and equivalent scale migration.
+- [x] Add activation-weighted group-wise clipping search.
+- [x] Add asymmetric canonical W4G128 packing, zero points, and export metadata.
+- [x] Add CPU unit gates for transformations, search safety, and export loading.
+- [ ] Run end-to-end Qwen2 calibration and validate against the NVIDIA reference.
+- [ ] Pass the complete Phase C quality matrix and freeze the final checkpoint.
+
+The current status is `awaiting_gpu_reference`; CPU implementation progress is
+not a reference-quality claim. See `docs/phase-d-canonical-awq.md`.
+
 ## Phase 1 — Recovered reference repository (current)
 
 - [x] Inspect the 730-tensor checkpoint contract.

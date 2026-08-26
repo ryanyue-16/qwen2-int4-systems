@@ -55,11 +55,11 @@ def lpu_functional_linear(
     This is deliberately not a cycle-accurate or bit-accurate hardware model.
     It uses FP32 PyTorch matmul for each K group and FP32 C-buffer accumulation.
     """
-    if torch.count_nonzero(zeros).item() != 0:
-        raise NotImplementedError("LPU functional backend currently expects symmetric weights")
-
     groups = in_features // group_size
     codes = unpack_int4(qweight, packing=packing).reshape(out_features, in_features)
+    zero_values = unpack_int4(
+        zeros, packing=packing, elements=out_features * groups
+    ).reshape(out_features, groups)
     activation = x.reshape(-1, in_features).to(torch.float32)
     accumulator = torch.zeros(
         (activation.shape[0], out_features), device=x.device, dtype=torch.float32
@@ -70,10 +70,10 @@ def lpu_functional_linear(
         stop = start + group_size
         a_tile = activation[:, start:stop]
         b_tile = codes[:, start:stop].to(torch.float32)
+        b_tile = b_tile - zero_values[:, group].to(torch.float32).unsqueeze(1)
         b_tile = b_tile * scales[:, group].to(torch.float32).unsqueeze(1)
         accumulator.add_(a_tile @ b_tile.t())
 
     if bias is not None:
         accumulator.add_(bias.to(torch.float32))
     return accumulator.reshape(*x.shape[:-1], out_features).to(x.dtype)
-

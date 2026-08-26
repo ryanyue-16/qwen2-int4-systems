@@ -5,6 +5,7 @@ from qwen_int4.quantization import (
     PackingFormat,
     dequantize_groupwise,
     pack_int4,
+    quantize_asymmetric_rtn,
     quantize_activation_weighted_clip,
     quantize_symmetric_rtn,
     unpack_int4,
@@ -48,16 +49,38 @@ def test_groupwise_dequantization_indexes_scales_along_k():
     torch.testing.assert_close(actual, expected)
 
 
-def test_nonzero_zero_points_fail_loudly():
-    with pytest.raises(NotImplementedError):
-        dequantize_groupwise(
-            torch.zeros(2, dtype=torch.uint8),
-            torch.ones(1, 1),
-            out_features=1,
-            in_features=4,
-            group_size=4,
-            zeros=torch.ones(1, dtype=torch.uint8),
-        )
+def test_asymmetric_rtn_round_trip_uses_packed_signed_zero_points():
+    weight = torch.tensor([[-3.0, -1.0, 0.5, 4.0, -0.2, 0.0, 0.4, 1.8]])
+    qweight, scales, zeros = quantize_asymmetric_rtn(weight, group_size=4)
+    restored = dequantize_groupwise(
+        qweight,
+        scales,
+        out_features=1,
+        in_features=8,
+        group_size=4,
+        packing=PackingFormat.CANONICAL,
+        zeros=zeros,
+    )
+
+    assert zeros.shape == (1, 1)
+    assert torch.count_nonzero(zeros).item() > 0
+    assert torch.nn.functional.cosine_similarity(weight, restored).item() > 0.99
+
+
+def test_asymmetric_rtn_preserves_one_sided_groups():
+    weight = torch.tensor([[1.0, 1.0, 1.0, 1.0]])
+    qweight, scales, zeros = quantize_asymmetric_rtn(weight, group_size=4)
+    restored = dequantize_groupwise(
+        qweight,
+        scales,
+        out_features=1,
+        in_features=4,
+        group_size=4,
+        packing=PackingFormat.CANONICAL,
+        zeros=zeros,
+    )
+
+    torch.testing.assert_close(restored, weight, rtol=1e-3, atol=1e-3)
 
 
 def test_symmetric_rtn_quantization_is_self_consistent():

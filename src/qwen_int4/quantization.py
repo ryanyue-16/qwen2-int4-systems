@@ -111,6 +111,57 @@ def quantize_symmetric_rtn(
     return packed, scales_fp32.to(torch.float16)
 
 
+def quantize_asymmetric_rtn(
+    weight: torch.Tensor,
+    *,
+    group_size: int = 128,
+    clip_max: torch.Tensor | None = None,
+    packing: PackingFormat | str = PackingFormat.CANONICAL,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Quantize a 2D weight with canonical signed storage and asymmetric W4.
+
+    Logical codes and zero points are first computed in ``[0, 15]``. Both are
+    shifted by eight into signed INT4 before canonical packing. Dequantization
+    therefore remains ``(signed_code - signed_zero) * scale``.
+    """
+
+    if weight.ndim != 2:
+        raise ValueError(f"weight must be 2D, got shape={tuple(weight.shape)}")
+    out_features, in_features = weight.shape
+    if in_features % group_size:
+        raise ValueError(f"in_features={in_features} is not divisible by group_size={group_size}")
+    groups = in_features // group_size
+    grouped = weight.detach().to(device="cpu", dtype=torch.float32).reshape(
+        out_features, groups, group_size
+    )
+    if clip_max is not None:
+        limits = clip_max.detach().to(device="cpu", dtype=torch.float32)
+        if tuple(limits.shape) != (out_features, groups):
+            raise ValueError(
+                f"clip_max must have shape {(out_features, groups)}, got {tuple(limits.shape)}"
+            )
+        if not torch.isfinite(limits).all() or torch.any(limits <= 0):
+            raise ValueError("clip_max values must be finite and positive")
+        grouped = torch.maximum(
+            torch.minimum(grouped, limits.unsqueeze(-1)), -limits.unsqueeze(-1)
+        )
+
+    zeros_fp32 = torch.zeros_like(grouped[..., 0])
+    minimum = torch.minimum(grouped.amin(dim=-1), zeros_fp32)
+    maximum = torch.maximum(grouped.amax(dim=-1), zeros_fp32)
+    scales = (maximum - minimum).clamp_min(1e-5) / 15.0
+    unsigned_zeros = torch.round(-minimum / scales).clamp_(0, 15).to(torch.int16)
+    unsigned_codes = torch.round(grouped / scales.unsqueeze(-1))
+    unsigned_codes.add_(unsigned_zeros.unsqueeze(-1)).clamp_(0, 15)
+    signed_codes = (unsigned_codes.to(torch.int16) - 8).to(torch.int8)
+    signed_zeros = (unsigned_zeros - 8).to(torch.int8).reshape(-1)
+    if signed_zeros.numel() % 2:
+        signed_zeros = torch.cat((signed_zeros, torch.zeros(1, dtype=torch.int8)))
+    qweight = pack_int4(signed_codes, packing=packing).reshape(-1, 1)
+    zeros = pack_int4(signed_zeros, packing=packing).reshape(-1, 1)
+    return qweight, scales.to(torch.float16), zeros
+
+
 def quantize_activation_weighted_clip(
     weight: torch.Tensor,
     activation_importance: torch.Tensor,
@@ -188,9 +239,20 @@ def dequantize_groupwise(
     expected_bytes = out_features * in_features // 2
     if qweight.numel() != expected_bytes:
         raise ValueError(f"qweight must contain {expected_bytes} bytes, got {qweight.numel()}")
-    if zeros is not None and torch.count_nonzero(zeros).item() != 0:
-        raise NotImplementedError("this reference currently supports symmetric checkpoints only")
-
     codes = unpack_int4(qweight, packing=packing).reshape(out_features, in_features)
     expanded_scales = scales.to(torch.float32).repeat_interleave(group_size, dim=1)
-    return codes.to(torch.float32) * expanded_scales
+    if zeros is None:
+        expanded_zeros = torch.zeros_like(expanded_scales)
+    else:
+        expected_zero_bytes = (out_features * groups + 1) // 2
+        if zeros.numel() != expected_zero_bytes:
+            raise ValueError(
+                f"zeros must contain {expected_zero_bytes} bytes, got {zeros.numel()}"
+            )
+        zero_values = unpack_int4(
+            zeros, packing=packing, elements=out_features * groups
+        ).reshape(out_features, groups)
+        expanded_zeros = zero_values.to(torch.float32).repeat_interleave(
+            group_size, dim=1
+        )
+    return (codes.to(torch.float32) - expanded_zeros) * expanded_scales

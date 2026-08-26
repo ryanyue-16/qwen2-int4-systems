@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "artifact_id": "qwen2-1.5b-w4g128-awq-canonical-v1",
+  "status": "awaiting_gpu_reference",
+  "weights_present": false,
+  "config": "configs/awq-canonical-v1.json",
+  "format_version": "qwen-int4-awq-v1",
+  "allowed_work": "CPU-testable AWQ implementation and unit validation",
+  "blocked_claims": [
+    "reference AWQ quality parity",
+    "Phase C quality-gate completion",
+    "final checkpoint-contract freeze",
+    "Triton or CUDA performance"
+  ]
+}
