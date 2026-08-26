@@ -1,0 +1,28 @@
+{
+  "text": "data/evaluation_corpus.txt",
+  "tokens": 98,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g128-conservative-clip-v3/model.safetensors",
+  "packing": "canonical",
+  "bf16": {
+    "nll": 4.111449718475342,
+    "perplexity": 61.03513722841495
+  },
+  "int4": {
+    "nll": 4.260364532470703,
+    "perplexity": 70.8358006978215
+  },
+  "delta_nll": 0.14891481399536133,
+  "top1_agreement": 0.8144329786300659,
+  "logits": {
+    "shape": [
+      1,
+      98,
+      151936
+    ],
+    "max_abs": 20.875,
+    "mean_abs": 0.4411379396915436,
+    "rmse": 0.6227790713310242,
+    "mean_relative": 1.8909001350402832,
+    "cosine": 0.9830347299575806
+  }
+}

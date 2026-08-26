@@ -1,0 +1,28 @@
+{
+  "text": "data/evaluation_corpus.txt",
+  "tokens": 98,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g128-rtn-v1/model.safetensors",
+  "packing": "canonical",
+  "bf16": {
+    "nll": 4.111449718475342,
+    "perplexity": 61.03513722841495
+  },
+  "int4": {
+    "nll": 4.2998270988464355,
+    "perplexity": 73.68705202180482
+  },
+  "delta_nll": 0.18837738037109375,
+  "top1_agreement": 0.8350515365600586,
+  "logits": {
+    "shape": [
+      1,
+      98,
+      151936
+    ],
+    "max_abs": 20.9375,
+    "mean_abs": 0.4389757215976715,
+    "rmse": 0.6241135597229004,
+    "mean_relative": 1.8889856338500977,
+    "cosine": 0.9835286140441895
+  }
+}

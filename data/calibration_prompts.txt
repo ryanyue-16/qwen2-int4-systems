@@ -1,0 +1,8 @@
+Large language model inference converts model parameters and input activations into output token probabilities.
+Quantization reduces memory traffic by representing weights with fewer bits while preserving useful numerical information.
+GPU kernels are organized into blocks and warps so nearby threads can access contiguous memory efficiently.
+机器学习系统不仅需要关注模型精度，还需要测量延迟、吞吐量、显存占用和数值稳定性。
+大语言模型推理通常分为 prefill 和 decode 两个阶段，它们具有不同的计算与访存特征。
+在权重量化中，每组参数共享一个缩放因子，因此分组大小会影响压缩率和量化误差。
+The quick brown fox jumps over the lazy dog. This sentence contains every letter of the English alphabet.
+Reliable benchmarks require warmup iterations, synchronization, fixed shapes, and a clearly documented environment.

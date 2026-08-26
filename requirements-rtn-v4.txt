@@ -1,0 +1,6 @@
+# Exact macOS arm64 environment captured for the frozen RTN v4 baseline.
+numpy==2.2.6
+safetensors==0.7.0
+torch==2.12.0
+transformers==5.9.0
+pytest==8.4.2

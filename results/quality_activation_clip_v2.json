@@ -1,0 +1,28 @@
+{
+  "text": "data/evaluation_corpus.txt",
+  "tokens": 98,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g128-activation-clip-v2/model.safetensors",
+  "packing": "canonical",
+  "bf16": {
+    "nll": 4.111449718475342,
+    "perplexity": 61.03513722841495
+  },
+  "int4": {
+    "nll": 4.378948211669922,
+    "perplexity": 79.75410483853331
+  },
+  "delta_nll": 0.2674984931945801,
+  "top1_agreement": 0.8041236996650696,
+  "logits": {
+    "shape": [
+      1,
+      98,
+      151936
+    ],
+    "max_abs": 20.46875,
+    "mean_abs": 0.3992423415184021,
+    "rmse": 0.5805345177650452,
+    "mean_relative": 1.556025505065918,
+    "cosine": 0.9856866598129272
+  }
+}

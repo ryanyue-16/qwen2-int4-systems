@@ -1,0 +1,116 @@
+{
+  "hf_model": "Qwen/Qwen2-1.5B",
+  "checkpoint": "/Users/takeuhiroshi/Desktop/25intern/artifacts/qwen2-1.5b-w4g64-rtn-v4/model.safetensors",
+  "max_new_tokens": 8,
+  "mean_position_agreement": 0.8125,
+  "cases": [
+    {
+      "prompt": "量化推理能够降低大语言模型的部署成本，因为",
+      "bf16_token_ids": [
+        2130,
+        8997,
+        32,
+        13,
+        220,
+        108048,
+        113272,
+        73670
+      ],
+      "bf16_continuation": "____。\nA. 量化推理可以",
+      "int4_token_ids": [
+        2130,
+        8997,
+        32,
+        13,
+        220,
+        102064,
+        104949,
+        9370
+      ],
+      "int4_continuation": "____。\nA. 语言模型的",
+      "common_prefix_tokens": 5,
+      "position_agreement": 0.625
+    },
+    {
+      "prompt": "A key-value cache accelerates autoregressive inference because",
+      "bf16_token_ids": [
+        432,
+        6147,
+        498,
+        311,
+        3553,
+        279,
+        1429,
+        3213
+      ],
+      "bf16_continuation": " it allows you to store the most recent",
+      "int4_token_ids": [
+        432,
+        6147,
+        601,
+        311,
+        3553,
+        279,
+        4453,
+        3078
+      ],
+      "int4_continuation": " it allows us to store the entire aut",
+      "common_prefix_tokens": 2,
+      "position_agreement": 0.625
+    },
+    {
+      "prompt": "def fibonacci(n):\n    if n <= 1:\n        return n\n    ",
+      "bf16_token_ids": [
+        770,
+        510,
+        286,
+        470,
+        75698,
+        1445,
+        12,
+        16
+      ],
+      "bf16_continuation": " else:\n        return fibonacci(n-1",
+      "int4_token_ids": [
+        770,
+        510,
+        286,
+        470,
+        75698,
+        1445,
+        12,
+        16
+      ],
+      "int4_continuation": " else:\n        return fibonacci(n-1",
+      "common_prefix_tokens": 8,
+      "position_agreement": 1.0
+    },
+    {
+      "prompt": "A box contains 12 red balls and 8 blue balls. The total number of balls is",
+      "bf16_token_ids": [
+        220,
+        17,
+        15,
+        13,
+        3555,
+        374,
+        279,
+        18927
+      ],
+      "bf16_continuation": " 20. What is the probability",
+      "int4_token_ids": [
+        220,
+        17,
+        15,
+        13,
+        3555,
+        374,
+        279,
+        18927
+      ],
+      "int4_continuation": " 20. What is the probability",
+      "common_prefix_tokens": 8,
+      "position_agreement": 1.0
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+"""Operator backends for quantized linear layers."""
+
+from __future__ import annotations
+
+import torch
+
+from .quantization import PackingFormat, dequantize_groupwise, unpack_int4
+
+
+SUPPORTED_BACKENDS = ("torch", "lpu")
+
+
+def torch_reference_linear(
+    x: torch.Tensor,
+    qweight: torch.Tensor,
+    scales: torch.Tensor,
+    zeros: torch.Tensor,
+    bias: torch.Tensor | None,
+    *,
+    out_features: int,
+    in_features: int,
+    group_size: int,
+    packing: PackingFormat,
+) -> torch.Tensor:
+    """Correctness-first W4A16 path: dequantize the full weight, then matmul."""
+    weight = dequantize_groupwise(
+        qweight,
+        scales,
+        zeros=zeros,
+        out_features=out_features,
+        in_features=in_features,
+        group_size=group_size,
+        packing=packing,
+    )
+    output = x.reshape(-1, in_features).to(torch.float32) @ weight.t()
+    if bias is not None:
+        output = output + bias.to(torch.float32)
+    return output.reshape(*x.shape[:-1], out_features).to(x.dtype)
+
+
+def lpu_functional_linear(
+    x: torch.Tensor,
+    qweight: torch.Tensor,
+    scales: torch.Tensor,
+    zeros: torch.Tensor,
+    bias: torch.Tensor | None,
+    *,
+    out_features: int,
+    in_features: int,
+    group_size: int,
+    packing: PackingFormat,
+) -> torch.Tensor:
+    """K-streaming functional model of the LPU A/B/C-buffer dataflow.
+
+    This is deliberately not a cycle-accurate or bit-accurate hardware model.
+    It uses FP32 PyTorch matmul for each K group and FP32 C-buffer accumulation.
+    """
+    if torch.count_nonzero(zeros).item() != 0:
+        raise NotImplementedError("LPU functional backend currently expects symmetric weights")
+
+    groups = in_features // group_size
+    codes = unpack_int4(qweight, packing=packing).reshape(out_features, in_features)
+    activation = x.reshape(-1, in_features).to(torch.float32)
+    accumulator = torch.zeros(
+        (activation.shape[0], out_features), device=x.device, dtype=torch.float32
+    )
+
+    for group in range(groups):
+        start = group * group_size
+        stop = start + group_size
+        a_tile = activation[:, start:stop]
+        b_tile = codes[:, start:stop].to(torch.float32)
+        b_tile = b_tile * scales[:, group].to(torch.float32).unsqueeze(1)
+        accumulator.add_(a_tile @ b_tile.t())
+
+    if bias is not None:
+        accumulator.add_(bias.to(torch.float32))
+    return accumulator.reshape(*x.shape[:-1], out_features).to(x.dtype)
+

@@ -1,0 +1,6 @@
+# For editable development use `python -m pip install -e ".[dev]".
+numpy>=1.26
+safetensors>=0.4.3
+torch>=2.3
+transformers>=4.43,<6
+

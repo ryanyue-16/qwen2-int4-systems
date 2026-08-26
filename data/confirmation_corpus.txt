@@ -1,0 +1,3 @@
+Matrix multiplication performance depends on arithmetic intensity, cache reuse, memory layout, and synchronization overhead. A fused kernel can avoid writing intermediate dequantized weights back to global memory, but it must still preserve the reference computation within an agreed numerical tolerance.
+
+评估一个推理系统时，需要区分算子正确性、端到端模型质量以及真实硬件性能。只有固定输入、完成预热、正确同步并报告软件和硬件环境，性能数字才具有可复现性。

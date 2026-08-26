@@ -1,0 +1,3 @@
+Efficient neural network inference is a balance between numerical accuracy and hardware utilization. A good quantization method should reduce memory bandwidth without destroying the model's predictions. Measurements must separate kernel latency from end-to-end generation speed.
+
+现代语言模型包含注意力层、归一化层和前馈网络。把权重压缩到四比特可以显著减少存储开销，但缩放因子的选择会影响误差如何在网络中逐层传播。可靠的实现需要同时验证权重、激活和最终输出。

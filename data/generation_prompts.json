@@ -1,0 +1,18 @@
+[
+  {
+    "id": "zh_explanation",
+    "prompt": "量化推理能够降低大语言模型的部署成本，因为"
+  },
+  {
+    "id": "en_explanation",
+    "prompt": "A key-value cache accelerates autoregressive inference because"
+  },
+  {
+    "id": "python_code",
+    "prompt": "def fibonacci(n):\n    if n <= 1:\n        return n\n    "
+  },
+  {
+    "id": "arithmetic",
+    "prompt": "A box contains 12 red balls and 8 blue balls. The total number of balls is"
+  }
+]

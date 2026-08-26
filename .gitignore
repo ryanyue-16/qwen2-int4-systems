@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Large model artifacts are local inputs, not source code.
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Lightweight manifests and versioned JSON reports are intentionally tracked.
+# Large model artifacts remain excluded by the extensions above.
+
+# Private local architecture references; never publish internal diagrams.
+docs/architecture/*.png
+
+.DS_Store

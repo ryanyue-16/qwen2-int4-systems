@@ -1,0 +1,156 @@
+{
+  "artifact": {
+    "expected_sha256": "6181db4f9542b7db3a5ea4458b5c11b50ad2da51cfd20c33188d58efd43b147c",
+    "path": "artifacts/qwen2-1.5b-w4g64-rtn-v4/model.safetensors",
+    "safetensors_metadata": {
+      "activation_dtype": "bf16_or_fp16",
+      "bits": "4",
+      "code_range": "[-7,7]",
+      "format_version": "qwen-int4-v1",
+      "group_size": "64",
+      "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+      "quantization": "symmetric_rtn",
+      "scale_layout": "[out_features,in_features/group_size]",
+      "source_model": "Qwen/Qwen2-1.5B",
+      "weight_layout": "row_major_[out_features,in_features]",
+      "zero_point": "none_symmetric"
+    },
+    "sha256": "6181db4f9542b7db3a5ea4458b5c11b50ad2da51cfd20c33188d58efd43b147c",
+    "size_bytes": 706342488,
+    "tensor_inventory": {
+      "nonzero_zero_tensors": [],
+      "qweight": 196,
+      "scales": 196,
+      "total": 588,
+      "zeros": 196
+    }
+  },
+  "captured_at": "2026-08-26T09:37:39+08:00",
+  "data_separation": {
+    "calibration_and_evaluation_use_distinct_paths": true,
+    "semantic_leakage_audit": "pending"
+  },
+  "environment": {
+    "hardware": {
+      "cuda": {
+        "available": false,
+        "device_count": 0,
+        "devices": [],
+        "torch_cuda_version": null
+      },
+      "logical_cpu_count": 8,
+      "machine": "arm64",
+      "mps": {
+        "available": false,
+        "built": true
+      },
+      "os": "macOS-15.7.7-arm64-arm-64bit",
+      "processor": "arm",
+      "release": "24.6.0",
+      "system": "Darwin"
+    },
+    "software": {
+      "conda_environment": "qwen_vl",
+      "packages": {
+        "numpy": "2.2.6",
+        "pytest": "8.4.2",
+        "safetensors": "0.7.0",
+        "torch": "2.12.0",
+        "transformers": "5.9.0"
+      },
+      "python": "3.10.20",
+      "python_executable": "/opt/anaconda3/envs/qwen_vl/bin/python",
+      "python_implementation": "CPython"
+    }
+  },
+  "inputs": {
+    "generation_prompts": {
+      "path": "data/generation_prompts.json",
+      "sha256": "cf5a959b24792bb20634f8ef513bb0359bb7f701a977139ce79f600461f7642a",
+      "size_bytes": 468
+    },
+    "held_out_confirmation": {
+      "path": "data/confirmation_corpus.txt",
+      "sha256": "f97b77c46f671eb87ca6892a20f5289ef1b850797580b84503d9c19ac998e18f",
+      "size_bytes": 532
+    },
+    "held_out_evaluation": {
+      "path": "data/evaluation_corpus.txt",
+      "sha256": "f36c58c3659ffbaf1a893f279f732ad9399be07f519937912da2a2e2add19853",
+      "size_bytes": 548
+    },
+    "reserved_calibration": {
+      "path": "data/calibration_prompts.txt",
+      "sha256": "a303f60c511776a2f645e8f7ed68a62f451fa129ba93fa20c9f92587f9a3f432",
+      "size_bytes": 915
+    },
+    "wikitext2_test_slice": {
+      "path": "data/wikitext2_test_100rows.txt",
+      "sha256": "c2ee393ec598528c5a206b2f7760b9cb89d656f17bb66f5f8052fb6a1d022c09",
+      "size_bytes": 24367
+    }
+  },
+  "quantization_contract": {
+    "activation_dtype": "bf16_or_fp16",
+    "bits": "4",
+    "code_range": "[-7,7]",
+    "format_version": "qwen-int4-v1",
+    "group_size": "64",
+    "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+    "quantization": "symmetric_rtn",
+    "scale_layout": "[out_features,in_features/group_size]",
+    "source_model": "Qwen/Qwen2-1.5B",
+    "weight_layout": "row_major_[out_features,in_features]",
+    "zero_point": "none_symmetric"
+  },
+  "random_seeds": {
+    "numpy": 0,
+    "python": 0,
+    "torch": 0
+  },
+  "related_files": {
+    "generation_regression": {
+      "path": "results/generation_w4g64_rtn_v4.json",
+      "sha256": "4826198b7f9cc0dfca95176942cd1eb7f645d6f353cbd2f8b6ea74b3f6a8375a",
+      "size_bytes": 2510
+    },
+    "hf_validation": {
+      "path": "results/hf_validation_w4g64_rtn_v4.json",
+      "sha256": "6cd1321abadc76f515bad009194d95ba56b96f1686c4e6656f1cb033a9cae118",
+      "size_bytes": 166788
+    },
+    "local_model_config": {
+      "path": "configs/qwen2-1.5b/config.json",
+      "sha256": "0eb8ffb288f302fae9797cce3e9bd5156d61a914f5d910053033bb76bfe9bd44",
+      "size_bytes": 697
+    },
+    "quantization_report": {
+      "path": "artifacts/qwen2-1.5b-w4g64-rtn-v4/quantization-report.json",
+      "sha256": "77d7051e72a451584a7b5be83dc641379a352e1b590bb73c8b8190a660e042b7",
+      "size_bytes": 57314
+    },
+    "wikitext2_metadata": {
+      "path": "data/wikitext2_test_100rows.metadata.json",
+      "sha256": "9029a999ec2c618b9dd3e9fe40ec88d5e97c360ef01eafa16b78f6336a4fbc26",
+      "size_bytes": 350
+    },
+    "wikitext2_quality": {
+      "path": "results/quality_w4g64_rtn_v4_wikitext2_2k.json",
+      "sha256": "29e0219b03bb9d7e58a5d46e839a27ddbe183eddfc19f2327ae8b584f4fcf340",
+      "size_bytes": 685
+    }
+  },
+  "schema_version": "qwen-int4-artifact-manifest-v1",
+  "source_control": {
+    "available": false,
+    "reason": "project root is not a Git work tree",
+    "type": null
+  },
+  "upstream": {
+    "model_id": "Qwen/Qwen2-1.5B",
+    "model_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+    "revision_status": "retrospectively pinned to the locally validated snapshot",
+    "tokenizer_id": "Qwen/Qwen2-1.5B",
+    "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "text": "data/confirmation_corpus.txt",
+  "tokens": 97,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g128-rtn-v1/model.safetensors",
+  "packing": "canonical",
+  "bf16": {
+    "nll": 4.424549579620361,
+    "perplexity": 83.4751998219131
+  },
+  "int4": {
+    "nll": 4.591651916503906,
+    "perplexity": 98.65726919788919
+  },
+  "delta_nll": 0.16710233688354492,
+  "top1_agreement": 0.7083333134651184,
+  "logits": {
+    "shape": [
+      1,
+      97,
+      151936
+    ],
+    "max_abs": 16.6484375,
+    "mean_abs": 0.48401403427124023,
+    "rmse": 0.6980892419815063,
+    "mean_relative": 1.7998982667922974,
+    "cosine": 0.9810518622398376
+  }
+}

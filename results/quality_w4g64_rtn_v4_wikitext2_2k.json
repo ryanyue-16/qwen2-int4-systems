@@ -1,0 +1,27 @@
+{
+  "text": "data/wikitext2_test_100rows.txt",
+  "tokens": 2048,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g64-rtn-v4/model.safetensors",
+  "packing": "canonical",
+  "group_size": 64,
+  "bf16": {
+    "nll": 2.4689790085576835,
+    "perplexity": 11.81038239448537,
+    "predictions": 2047,
+    "windows": 16,
+    "window_size": 256,
+    "stride": 128
+  },
+  "int4": {
+    "nll": 2.56035996787887,
+    "perplexity": 12.940474632455556,
+    "predictions": 2047,
+    "windows": 16,
+    "window_size": 256,
+    "stride": 128
+  },
+  "delta_nll": 0.0913809593211865,
+  "perplexity_ratio": 1.0956863376835166,
+  "top1_agreement": 0.8607718348503113,
+  "target_log_prob_mae": 0.2858034372329712
+}
