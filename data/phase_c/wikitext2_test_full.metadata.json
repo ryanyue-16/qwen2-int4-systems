@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "dataset": "Salesforce/wikitext",
+  "config": "wikitext-2-raw-v1",
+  "split": "test",
+  "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+  "rows": 4358,
+  "source_url": "https://huggingface.co/datasets/Salesforce/wikitext/resolve/b08601e04326c79dfdd32d625aee71d232d685c3/wikitext-2-raw-v1/test-00000-of-00001.parquet",
+  "source_parquet": "test-00000-of-00001.parquet",
+  "source_parquet_sha256": "5f1bea067869d04849c0f975a2b29c4ff47d867f484f5010ea5e861eab246d91",
+  "normalization": "Remove trailing whitespace from each source row.",
+  "corpus_sha256": "90172ab2c5b6fce8f8a89a438733715ffef0989f220fac42e4fcfdd9757fe1f6",
+  "corpus_size_bytes": 1289119
+}

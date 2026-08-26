@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "pending_gpu_validation",
+  "model": {
+    "id": "Qwen/Qwen2-1.5B",
+    "revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+    "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a"
+  },
+  "reference": {
+    "implementation": "vllm-project/llm-compressor",
+    "version": "0.13.0",
+    "compressed_tensors_version": "0.18.0",
+    "recipe": "AWQModifier + QuantizationModifier",
+    "scheme": "W4A16_ASYM",
+    "targets": [
+      "Linear"
+    ],
+    "ignore": [
+      "lm_head"
+    ],
+    "group_size": 128,
+    "weight_bits": 4,
+    "activation_bits": 16,
+    "symmetric": false,
+    "zero_point": "per-group asymmetric",
+    "native_format": "compressed-tensors",
+    "quantization_format": "pack_quantized",
+    "pipeline": "sequential",
+    "duo_scaling": true,
+    "scale_search_grid_points": 20
+  },
+  "calibration": {
+    "dataset": "Salesforce/wikitext",
+    "config": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "split": "train",
+    "text_column": "text",
+    "samples": 256,
+    "max_sequence_length": 512,
+    "seed": 42,
+    "add_special_tokens": false
+  },
+  "evaluation": {
+    "dataset_split": "test",
+    "must_not_use_calibration_split": true
+  },
+  "output_directory": "artifacts/qwen2-1.5b-w4g128-awq-reference-v1"
+}

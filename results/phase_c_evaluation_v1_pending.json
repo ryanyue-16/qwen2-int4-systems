@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "evaluation_id": "phase-c-evaluation-v1",
+  "status": "pending_model_runs",
+  "created_at": "2026-08-26T02:21:51.237706+00:00",
+  "config": "configs/phase-c-evaluation-v1.json",
+  "config_sha256": "06dad5a362a3cd1ac8e0cdd71a643b262f4a628ec73f129a24fd44f0c0f87fb0",
+  "model_status": {
+    "bf16": "ready",
+    "w4g64_rtn_v4": "ready",
+    "w4g128_awq_reference_v1": "pending_gpu_validation",
+    "w4g128_awq_canonical_v1": "awaiting_phase_d"
+  },
+  "corpora": {
+    "wikitext2_test_full": {
+      "path": "data/phase_c/wikitext2_test_full.txt",
+      "sha256": "90172ab2c5b6fce8f8a89a438733715ffef0989f220fac42e4fcfdd9757fe1f6"
+    },
+    "chinese_eval_v1": {
+      "path": "data/phase_c/chinese_eval_v1.txt",
+      "sha256": "590a5dacceafbda5ca01f509c07999ad041d81c51fe64f17edce9075fa238afb"
+    }
+  },
+  "generation": {
+    "path": "data/phase_c/generation_prompts_v1.json",
+    "sha256": "1494167d293db82128a4769b639eb191c7c92e6cca36db28b23616f758e2e164"
+  },
+  "calibration_evaluation_isolation": "passed",
+  "host": {
+    "platform": "macOS-15.7.7-arm64-arm-64bit",
+    "python": "3.10.20 (main, Mar 11 2026, 17:43:48) [Clang 20.1.8 ]"
+  },
+  "missing_required_runs": [
+    "bf16",
+    "w4g64_rtn_v4",
+    "w4g128_awq_reference_v1",
+    "w4g128_awq_canonical_v1"
+  ]
+}

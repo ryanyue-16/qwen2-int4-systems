@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "artifact_id": "qwen2-1.5b-w4g128-awq-reference-v1",
+  "status": "pending_gpu_validation",
+  "weights_present": false,
+  "reason": "The current macOS host has no NVIDIA CUDA device. Quantization and native-backend validation must run on a supported NVIDIA Linux host.",
+  "config": "configs/awq-reference-v1.json",
+  "environment": "environments/awq-reference-cu12.yml",
+  "quantization_entrypoint": "scripts/quantize_awq_reference.py",
+  "evaluation_entrypoint": "scripts/evaluate_awq_reference.py",
+  "native_format": "compressed-tensors pack_quantized",
+  "canonical_format_equivalence": "not_assumed",
+  "required_evidence": [
+    "compressed checkpoint and tokenizer files",
+    "runtime-manifest.json",
+    "versioned quality JSON",
+    "vLLM native-format generation smoke test",
+    "NVIDIA GPU and CUDA environment capture"
+  ]
+}

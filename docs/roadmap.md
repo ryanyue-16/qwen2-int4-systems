@@ -13,6 +13,29 @@ Exit evidence is documented in `docs/reproducibility.md`. The checkpoint remains
 the comparison baseline for phases B–D. No Triton, KV-cache, CUDA-performance,
 or real-LPU claim is part of phase A.
 
+## Phase B — Mature AWQ reference
+
+- [x] Select an actively maintained official AWQ implementation with Qwen2 mappings.
+- [x] Freeze the W4G128 asymmetric recipe, calibration source, and native format.
+- [x] Add an isolated, version-pinned NVIDIA Linux environment.
+- [x] Add fail-closed quantization and quality-evaluation entry points.
+- [ ] Produce and validate the native checkpoint on an NVIDIA Linux host.
+
+The selected oracle is LLM Compressor 0.13.0 with native compressed-tensors
+export. The local status is `pending_gpu_validation`; no reference quality or
+performance number has been fabricated. See `docs/awq-reference.md`.
+
+## Phase C — Unified quality evaluation
+
+- [x] Freeze the complete WikiText-2 test input and an independent Chinese corpus.
+- [x] Expand deterministic English, Chinese, code, math/logic, and long-context cases.
+- [x] Enforce shared tokenization, scoring, decoding, checksum, and isolation rules.
+- [x] Add a unified fail-closed runner for BF16, RTN, reference AWQ, and self-AWQ.
+- [ ] Run all four model rows on one NVIDIA evaluation host and apply the gates.
+
+The protocol is ready, but Phase C is not numerically complete while the Phase B
+reference and Phase D checkpoints are absent. See `docs/phase-c-evaluation.md`.
+
 ## Phase 1 — Recovered reference repository (current)
 
 - [x] Inspect the 730-tensor checkpoint contract.

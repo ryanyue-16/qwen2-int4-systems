@@ -10,6 +10,7 @@ inference research. The repository currently provides:
 - Qwen2 RMSNorm, RoPE, GQA, causal attention, SwiGLU, and CausalLM components;
 - checkpoint inspection, packing validation, quality evaluation, and tests;
 - a frozen W4G64 RTN baseline for fair AWQ comparisons.
+- a pinned mature AWQ reference recipe awaiting NVIDIA GPU validation.
 
 Triton kernels, KV caching, and performance claims are intentionally out of
 scope until the AWQ checkpoint contract and quality gate are frozen. The current
@@ -169,6 +170,28 @@ PYTHONPATH=src conda run --no-capture-output -n qwen_vl \
 
 See [Reproducibility contract](docs/reproducibility.md) for environment and
 provenance details.
+
+## Mature AWQ reference
+
+Phase B selects vLLM Project LLM Compressor 0.13.0 as the external W4G128 AWQ
+oracle. The repository includes a frozen asymmetric recipe, a separate NVIDIA
+Linux environment, and fail-closed quantization and evaluation entry points.
+The native compressed-tensors format is preserved and is not assumed to match
+this project's canonical packing. The current Mac cannot execute the CUDA run,
+so the artifact is explicitly marked `pending_gpu_validation`.
+
+See [Mature AWQ reference](docs/awq-reference.md) for the decision record and
+NVIDIA commands.
+
+## Unified quality gate
+
+Phase C freezes the complete WikiText-2 test split, an independent Chinese
+corpus, and deterministic multilingual/code/reasoning/long-context generation
+cases. A single runner applies identical tokenization, scoring, and decoding to
+BF16, RTN, external AWQ, and future canonical self-AWQ rows. The protocol is
+ready, while the four-row NVIDIA result remains pending.
+
+See [Phase C unified quality evaluation](docs/phase-c-evaluation.md).
 
 ## Inspect the checkpoint
 

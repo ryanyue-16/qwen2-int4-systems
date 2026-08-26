@@ -1,0 +1,57 @@
+[
+  {
+    "id": "en_explanation_kv_cache",
+    "category": "english",
+    "prompt": "A key-value cache accelerates autoregressive transformer inference because"
+  },
+  {
+    "id": "en_explanation_reproducibility",
+    "category": "english",
+    "prompt": "A reproducible machine-learning benchmark must record"
+  },
+  {
+    "id": "zh_explanation_quantization",
+    "category": "chinese",
+    "prompt": "权重量化可以降低大语言模型的部署成本，主要原因是"
+  },
+  {
+    "id": "zh_explanation_experiment",
+    "category": "chinese",
+    "prompt": "为了让机器学习实验能够被他人复现，报告中应当记录"
+  },
+  {
+    "id": "python_fibonacci",
+    "category": "code",
+    "prompt": "def fibonacci(n):\n    if n <= 1:\n        return n\n    "
+  },
+  {
+    "id": "python_safe_mean",
+    "category": "code",
+    "prompt": "def safe_mean(values):\n    if not values:\n        return None\n    "
+  },
+  {
+    "id": "arithmetic_total",
+    "category": "math_logic",
+    "prompt": "A box contains 12 red balls and 8 blue balls. The total number of balls is"
+  },
+  {
+    "id": "arithmetic_remaining",
+    "category": "math_logic",
+    "prompt": "Mina had 35 notebooks and gave 9 away. She now has"
+  },
+  {
+    "id": "logic_order",
+    "category": "math_logic",
+    "prompt": "Kai is older than Lin, and Lin is older than Bo. Therefore, the oldest person is"
+  },
+  {
+    "id": "long_context_english_retrieval",
+    "category": "long_context",
+    "prompt": "A field report describes four monitoring stations. North Station records wind speed every ten minutes. East Station records rainfall every hour. South Station records soil temperature twice a day. West Station records river height every five minutes. The report then discusses battery replacement, radio interference, seasonal access roads, sensor calibration, backup storage, and maintenance schedules in detail. After reviewing all of those operational notes, answer this question in one short sentence: Which station records river height? Answer:"
+  },
+  {
+    "id": "long_context_chinese_retrieval",
+    "category": "long_context",
+    "prompt": "一份仓库记录列出了四个货架的物品。甲货架存放纸张，乙货架存放玻璃杯，丙货架存放电池，丁货架存放棉布。记录随后详细说明了盘点日期、照明维护、通风安排、人员排班、运输路线和安全检查。根据前面的物品清单，用一句简短的话回答：哪个货架存放电池？答案："
+  }
+]

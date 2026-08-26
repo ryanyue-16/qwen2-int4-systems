@@ -1,0 +1,17 @@
+name: qwen-awq-reference
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip=26.2
+  - pip:
+      - torch==2.12.0
+      - transformers==5.9.0
+      - datasets==4.8.4
+      - accelerate==1.14.0
+      - compressed-tensors==0.18.0
+      - llmcompressor==0.13.0
+      - vllm==0.27.1
+      - safetensors==0.6.2
+      - numpy==2.4.3
+      - pytest==8.4.2
