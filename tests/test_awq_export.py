@@ -13,6 +13,7 @@ from qwen_int4.export import (
 )
 from qwen_int4.linear import QuantLinear
 from qwen_int4.quantization import PackingFormat
+from scripts.validate_against_hf import replace_hf_linear_weights_with_dequantized
 
 
 class ToyDenseModel(nn.Module):
@@ -74,6 +75,35 @@ def test_awq_loader_restores_transformed_state_and_asymmetric_weights(tmp_path: 
     assert torch.count_nonzero(target.proj.zeros).item() > 0
 
 
-def test_canonical_awq_metadata_rejects_group_size_drift():
+def test_canonical_awq_export_supports_w4g64_contract():
+    torch.manual_seed(11)
+    model = ToyDenseModel()
+    clip_max = model.proj.weight.detach().abs().reshape(4, 2, 64).amax(dim=-1)
+
+    export = build_canonical_awq_export(
+        model,
+        group_size=64,
+        clip_max_by_layer={"proj": clip_max},
+    )
+
+    assert export.metadata["group_size"] == "64"
+    assert export.tensors["proj.scales"].shape == (4, 2)
+
+
+def test_canonical_awq_metadata_rejects_unsupported_group_size():
     with pytest.raises(ValueError):
-        canonical_awq_metadata(group_size=64)
+        canonical_awq_metadata(group_size=32)
+
+
+def test_hf_dequantized_reference_receives_awq_transformed_parameters(tmp_path: Path):
+    model = ToyDenseModel()
+    transformed = torch.full_like(model.input_layernorm.weight, 0.375)
+    checkpoint = tmp_path / "transformed-only.safetensors"
+    from safetensors.torch import save_file
+
+    save_file({"input_layernorm.weight": transformed}, str(checkpoint))
+    replace_hf_linear_weights_with_dequantized(
+        model, str(checkpoint), PackingFormat.CANONICAL
+    )
+
+    torch.testing.assert_close(model.input_layernorm.weight, transformed)

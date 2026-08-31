@@ -1,0 +1,8 @@
+name: qwen-vllm-smoke
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip=26.2
+  - pip:
+      - vllm==0.27.1

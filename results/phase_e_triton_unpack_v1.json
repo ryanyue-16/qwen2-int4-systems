@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "primitive": "canonical_signed_int4_unpack",
+  "status": "correctness_passed",
+  "observed_at": "2026-08-31",
+  "contract": {
+    "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+    "input_dtype": "torch.uint8",
+    "output_dtype": "torch.int8",
+    "supported_device": "cuda",
+    "legacy_signed_add_supported": false
+  },
+  "validation": {
+    "environment_report": "results/phase_e_triton_environment_v1.json",
+    "test_path": "tests/test_triton_unpack.py",
+    "command": "PYTHONPATH=src python -m pytest tests/test_triton_unpack.py",
+    "result": "4 passed",
+    "coverage": [
+      "signed INT4 boundary patterns",
+      "random packed bytes",
+      "odd decoded element count",
+      "invalid dtype, count, and contiguous-layout rejection"
+    ]
+  },
+  "limitations": [
+    "No dequantization or matrix multiplication was executed.",
+    "No autotuning or performance benchmark was executed.",
+    "This evidence does not establish end-to-end model parity."
+  ]
+}

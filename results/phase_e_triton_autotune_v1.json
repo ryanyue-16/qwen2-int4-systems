@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "status": "correctness_validated_operator_autotune_completed",
+  "observed_at": "2026-08-31",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "config": {
+    "path": "configs/phase-e-triton-autotune-v1.json",
+    "sha256": "09aab4bbffe0c76218cada35ebca3f09af1d4ef58deb2d424f0621af586c6e42"
+  },
+  "environment_evidence": "results/phase_e_triton_environment_v1.json",
+  "selection_rule": "lowest_median_ms_among_candidates_that_pass_every_parity_check_for_the_profile",
+  "parity": {
+    "candidate_profile_pairs": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "selected_launches": [
+    {
+      "profile": "v_projection_fp16",
+      "shape_mnk": [1, 256, 1536],
+      "selected": {"block_m": 8, "block_n": 32, "num_warps": 2, "num_stages": 3},
+      "median_kernel_ms": 0.0799039974808693
+    },
+    {
+      "profile": "q_projection_bf16",
+      "shape_mnk": [8, 1536, 1536],
+      "selected": {"block_m": 8, "block_n": 32, "num_warps": 2, "num_stages": 3},
+      "median_kernel_ms": 0.08089599758386612
+    },
+    {
+      "profile": "mlp_down_projection_fp16",
+      "shape_mnk": [4, 1536, 8960],
+      "selected": {"block_m": 8, "block_n": 32, "num_warps": 2, "num_stages": 3},
+      "median_kernel_ms": 0.3255680054426193
+    }
+  ],
+  "limitations": [
+    "Measurements are CUDA-event operator timings on one RTX 4090 environment.",
+    "No full-model, prefill, decode, batching, memory, latency, or throughput result is reported.",
+    "This report does not establish production performance."
+  ]
+}

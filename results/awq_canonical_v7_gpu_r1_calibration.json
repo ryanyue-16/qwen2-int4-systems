@@ -1,0 +1,2881 @@
+{
+  "schema_version": 1,
+  "status": "generated_pending_quality_evaluation",
+  "config": "configs/awq-canonical-v7.json",
+  "config_sha256": "d60eaddafe5134214f77ad0965e0c2b553a32b6bcccc545f6795033e734cd0e7",
+  "calibration": {
+    "source": "huggingface_dataset",
+    "dataset": "Salesforce/wikitext",
+    "config": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "split": "train",
+    "seed": 42,
+    "samples": 256,
+    "max_sequence_length": 512,
+    "add_special_tokens": false
+  },
+  "transform_invariant_max_abs": 0.5625,
+  "transform_invariant_mean_abs": 0.04078943654894829,
+  "transform_invariant_relative_mean_abs": 0.009998500188125741,
+  "transform_invariant_cosine": 1.0,
+  "blocks": [
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0001884199136905645,
+          "identity_loss": 0.00021971094945698102
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0001212547067552805,
+          "identity_loss": 0.0001584264391567558
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.00045348403177091054,
+          "identity_loss": 0.0005489610135555268
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 8.727498546553154e-05,
+          "identity_loss": 0.00010615193362658222
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.8357321752991993e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.2471702979819383e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.7671744672043133e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.727642289812593e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.569834797825024e-07
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.958468136668671e-07
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.164852711127878e-09
+        }
+      },
+      "block_index": 0,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.42105263157894735,
+          "loss": 3.0054785430622407e-05,
+          "identity_loss": 4.1893976597685106e-05
+        },
+        "v_to_o": {
+          "ratio": 0.3157894736842105,
+          "loss": 4.443206125870347e-05,
+          "identity_loss": 4.817245644517243e-05
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0010540522102798734,
+          "identity_loss": 0.0011640149035624095
+        },
+        "up_to_down": {
+          "ratio": 0.9473684210526315,
+          "loss": 0.0003282350953668356,
+          "identity_loss": 0.046459188063939415
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.5772147889947519e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.842013029498048e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.873771786151337e-07
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.7811186242843178e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.048640663422702e-07
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 0.00023675696866121143
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.28867713001091e-06
+        }
+      },
+      "block_index": 1,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3684210526315789,
+          "loss": 0.00010408533373745261,
+          "identity_loss": 0.00013194538609401045
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 6.687299173790962e-05,
+          "identity_loss": 6.880904402351007e-05
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0015465336718729565,
+          "identity_loss": 0.0016787787633282798
+        },
+        "up_to_down": {
+          "ratio": 0.47368421052631576,
+          "loss": 0.00026805252612878877,
+          "identity_loss": 0.00034146918915212154
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.427185897133313e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0789386578835547e-05
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.1751105780131184e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.7878752578990316e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.734108647928224e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.505669600504916e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.1256809706594595e-08
+        }
+      },
+      "block_index": 2,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.47368421052631576,
+          "loss": 0.00011034797390516943,
+          "identity_loss": 0.00020596195667327104
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 7.755860860925168e-05,
+          "identity_loss": 8.67246271809563e-05
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0019678634724446704,
+          "identity_loss": 0.0022067999201161523
+        },
+        "up_to_down": {
+          "ratio": 0.5789473684210527,
+          "loss": 0.00045659257254252833,
+          "identity_loss": 0.001738259568810463
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.2022481061867438e-05
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.2719573684735224e-05
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.3721134564548265e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.30325570732748e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.1858454601897392e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6579484508838505e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.78009186572126e-08
+        }
+      },
+      "block_index": 3,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.42105263157894735,
+          "loss": 0.00022183027973009663,
+          "identity_loss": 0.0003841583695494648
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0001295166730415076,
+          "identity_loss": 0.00013840060273651034
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0024687925619738442,
+          "identity_loss": 0.002718931542975562
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.00048453717802961666,
+          "identity_loss": 0.0005446885867665211
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0002499948313925e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6497550632266211e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.023207346406707e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.863917434429823e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.533019364316715e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.759914413123624e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.7652477641026962e-08
+        }
+      },
+      "block_index": 4,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0002299916528373438,
+          "identity_loss": 0.00031193023532178704
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 0.0001620950788492337,
+          "identity_loss": 0.00018725157133303583
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.003124553497348513,
+          "identity_loss": 0.0035597560661179677
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.00057244588000079,
+          "identity_loss": 0.0007317147683352232
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.526514319673879e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.303701866272604e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.516957465559244e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.042308590778703e-08
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.781891564358375e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.5814348393614637e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.3625889506747626e-08
+        }
+      },
+      "block_index": 5,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3684210526315789,
+          "loss": 0.00027358082079178496,
+          "identity_loss": 0.00039045341230157913
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 0.00023830891586840153,
+          "identity_loss": 0.00025348388589918613
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0032600847738129754,
+          "identity_loss": 0.003805997967720032
+        },
+        "up_to_down": {
+          "ratio": 0.47368421052631576,
+          "loss": 0.0006745552333692709,
+          "identity_loss": 0.0008483060325185458
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.2878712115925737e-05
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.152604404021986e-05
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.8838407413568348e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.294751399427696e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.7183579024713254e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.942765139683615e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.4685985639271166e-08
+        }
+      },
+      "block_index": 6,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.00025379941854182454,
+          "identity_loss": 0.00037331131820809164
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.00019939919002354145,
+          "identity_loss": 0.00022913608700037003
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.002761463820934296,
+          "identity_loss": 0.0031495376357010435
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.0007309739788373312,
+          "identity_loss": 0.000838886791219314
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.292122419727093e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.1378298242780147e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.904701983032282e-07
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.1127998789106641e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.610334834367677e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.9531686323025497e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.278351184439089e-08
+        }
+      },
+      "block_index": 7,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.42105263157894735,
+          "loss": 0.0004527191625099506,
+          "identity_loss": 0.0006940788964676115
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.00042571674566715956,
+          "identity_loss": 0.0004894683370366693
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0025721522314207895,
+          "identity_loss": 0.002941007273537772
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.000642044081663092,
+          "identity_loss": 0.0007642505224794149
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.941761744703399e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.841646947781555e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.8681943048432e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.9087221403424337e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.2873993000539485e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.2407349408458686e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.671643173357552e-08
+        }
+      },
+      "block_index": 8,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.21052631578947367,
+          "loss": 0.00035827628451130003,
+          "identity_loss": 0.00045641165716239275
+        },
+        "v_to_o": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.00022048057871870697,
+          "identity_loss": 0.0002682427875697613
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0022402232246739526,
+          "identity_loss": 0.0025539605745247434
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0005185233894735575,
+          "identity_loss": 0.0005620759135733048
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4931332543710596e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.7616831630439265e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0664379033187288e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.267035543150996e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.5248367617459735e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.454958348607761e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.225534328521462e-08
+        }
+      },
+      "block_index": 9,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0003187589137026044,
+          "identity_loss": 0.00042552832149876614
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 0.0003322702832520008,
+          "identity_loss": 0.0003944346390198916
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.002019111386367253,
+          "identity_loss": 0.0023133658937045504
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.00046536047011613846,
+          "identity_loss": 0.0005049194442108274
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.7635569520280114e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.3571996027603745e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6262015378742944e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.867377079634025e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.002688916036277e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.752658474491909e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.4388921932304584e-08
+        }
+      },
+      "block_index": 10,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.21052631578947367,
+          "loss": 0.00031050837637332945,
+          "identity_loss": 0.00040493024796274773
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.00026757505838759243,
+          "identity_loss": 0.0003187588299624622
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0018782367131539753,
+          "identity_loss": 0.002126600806202207
+        },
+        "up_to_down": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0004140584108730157,
+          "identity_loss": 0.0004484897945076227
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.5804497479621205e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.623691671033157e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6208381339311018e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4577682350136456e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0400999599369243e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.008939761959482e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.235361927840131e-08
+        }
+      },
+      "block_index": 11,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0003676329381830458,
+          "identity_loss": 0.0004891184550512159
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0004369952657725662,
+          "identity_loss": 0.0005105037125758827
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.002032601407596043,
+          "identity_loss": 0.002408603153058461
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.0004272733349353075,
+          "identity_loss": 0.000497471890412271
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.7287061382376123e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.9317839107534382e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.3255374799191486e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.3820919636818871e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.9157264432578813e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.809783381962916e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.8941611773802833e-08
+        }
+      },
+      "block_index": 12,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.21052631578947367,
+          "loss": 0.0003826918798770019,
+          "identity_loss": 0.00042533264717175846
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.00035504656261764467,
+          "identity_loss": 0.0004221659619361162
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0018037692776748113,
+          "identity_loss": 0.0020574363214629038
+        },
+        "up_to_down": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.00038239647013445693,
+          "identity_loss": 0.00042507929416994256
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4509274706142605e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.597842012619367e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.7152600548797636e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.177919924406524e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0288867997587658e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4676295450044563e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.8329150580930218e-08
+        }
+      },
+      "block_index": 13,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3684210526315789,
+          "loss": 0.0003154435118378034,
+          "identity_loss": 0.0005458464153919491
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.00020033602777402848,
+          "identity_loss": 0.0002740365162026137
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0018844289439065116,
+          "identity_loss": 0.0021032118371554784
+        },
+        "up_to_down": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.000426202779635787,
+          "identity_loss": 0.0004655723460018635
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.1594542229431681e-05
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.841815719672013e-05
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.72151156020118e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.0783379877921107e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.655882422521245e-07
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6857809441717109e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.7652468759242765e-08
+        }
+      },
+      "block_index": 14,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0005303372798705876,
+          "identity_loss": 0.0006366334160475995
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0002801906084641814,
+          "identity_loss": 0.00029743730556219816
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.002059318231684821,
+          "identity_loss": 0.0024641567042895727
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0004980071680620313,
+          "identity_loss": 0.000578642861607174
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.965664296221803e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.6944815090246266e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.6638230085372925e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.3310341273609083e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4943195765226847e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.2941570680122823e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.534486398531044e-08
+        }
+      },
+      "block_index": 15,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.42105263157894735,
+          "loss": 0.00038350979079434394,
+          "identity_loss": 0.0005063366579001039
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0005391748272813857,
+          "identity_loss": 0.0005732750287279487
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.002278464819703783,
+          "identity_loss": 0.002815207839012146
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0006676201398173968,
+          "identity_loss": 0.0007900410952667395
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.757659558483283e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.977478288812563e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.9871358745149337e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.572449145394785e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.041176574290148e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.1006660517741693e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.8337248042807914e-08
+        }
+      },
+      "block_index": 16,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3684210526315789,
+          "loss": 0.0007587874580290674,
+          "identity_loss": 0.0009291964086734659
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0005311068380251527,
+          "identity_loss": 0.0006073915865272284
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.002757681267602103,
+          "identity_loss": 0.0033729881048202514
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0009148571019371351,
+          "identity_loss": 0.001062889350578189
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.2705135052092373e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.868156454700511e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.319488536770223e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.0667914074911096e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.229154910717625e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.691013029718306e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.483958341936159e-08
+        }
+      },
+      "block_index": 17,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.0,
+          "loss": 0.001136260239352837,
+          "identity_loss": 0.001136260239352837
+        },
+        "v_to_o": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0005941296694800258,
+          "identity_loss": 0.0006464756443165243
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0031937181949615477,
+          "identity_loss": 0.0039167301995413645
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.0010916769970208406,
+          "identity_loss": 0.0013247945656379063
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.701214154716581e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.388535671751015e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 8.429717127000913e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.6938764108308533e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.3806721856090007e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.822290404466912e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.179984441383567e-08
+        }
+      },
+      "block_index": 18,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.5263157894736842,
+          "loss": 0.0011014054058590434,
+          "identity_loss": 0.0012886367095190855
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0003970212710555643,
+          "identity_loss": 0.0004371441318653524
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.0035850530224187035,
+          "identity_loss": 0.0043589319501604355
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.0013585897783438365,
+          "identity_loss": 0.0016340647513667743
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.481617457306129e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.348239144746913e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.994299160898663e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.8524087863625027e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.839043074549409e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 8.401789273193572e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.18116766051935e-08
+        }
+      },
+      "block_index": 19,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.0009170361519910586,
+          "identity_loss": 0.0009766496029672224
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 0.0004027324030175805,
+          "identity_loss": 0.0004692115471698344
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.004583264248711722,
+          "identity_loss": 0.0055860200098582675
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.002151388364533583,
+          "identity_loss": 0.002678537741303444
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.327733227502904e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.8541274989256635e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.03532600204926e-06
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.216463516584554e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.666043762175832e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.82396182330558e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.8521063793741632e-07
+        }
+      },
+      "block_index": 20,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.42105263157894735,
+          "loss": 0.002488509992362706,
+          "identity_loss": 0.0026401480243647053
+        },
+        "v_to_o": {
+          "ratio": 0.15789473684210525,
+          "loss": 0.0007476962055079639,
+          "identity_loss": 0.001543276710435748
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.006098881363868713,
+          "identity_loss": 0.007739209703036717
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.003067744274934133,
+          "identity_loss": 0.00482675526291132
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.378882072662236e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.321696906117722e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.4749416550330352e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.0618490736978856e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.4230363326059887e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.553690698434366e-06
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.353574697939621e-07
+        }
+      },
+      "block_index": 21,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.0,
+          "loss": 0.0027952782055806545,
+          "identity_loss": 0.0027952782055806545
+        },
+        "v_to_o": {
+          "ratio": 0.05263157894736842,
+          "loss": 0.0005998527631163597,
+          "identity_loss": 0.0006154231959953904
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.007266786694526672,
+          "identity_loss": 0.009236198663711549
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.0035499539226293564,
+          "identity_loss": 0.005900169412295024
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.571763151441701e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.235676093841903e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.3141843737685122e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.4957596994900086e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.064488949661609e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.9306735339341685e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.2361791113544314e-07
+        }
+      },
+      "block_index": 22,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.47368421052631576,
+          "loss": 0.0015972932457801077,
+          "identity_loss": 0.001675044792796393
+        },
+        "v_to_o": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.0004666784661822021,
+          "identity_loss": 0.0008481908589601517
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.007674141866820199,
+          "identity_loss": 0.009326226370675223
+        },
+        "up_to_down": {
+          "ratio": 0.42105263157894735,
+          "loss": 0.004012184838453929,
+          "identity_loss": 0.005721207708120346
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.4369524150388315e-05
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 0.00010517157352296636
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 0.000807407486718148
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6323252793881693e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.656021575210616e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.4297652998939157e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.533744520860637e-07
+        }
+      },
+      "block_index": 23,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3684210526315789,
+          "loss": 0.001847451597097374,
+          "identity_loss": 0.0024432378442405343
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0007126307464204729,
+          "identity_loss": 0.001094545004889369
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.008886347072465078,
+          "identity_loss": 0.010710511463029045
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.005523013571898143,
+          "identity_loss": 0.008494953314463297
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.34951493339031e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.846023203863297e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.010616248706356e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.6710119155050052e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.426236829312984e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.228364064649213e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.405350750857906e-07
+        }
+      },
+      "block_index": 24,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.0,
+          "loss": 0.005010284589187348,
+          "identity_loss": 0.005010284589187348
+        },
+        "v_to_o": {
+          "ratio": 0.05263157894736842,
+          "loss": 0.0019919085316359997,
+          "identity_loss": 0.003405800089240074
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.009233182668685913,
+          "identity_loss": 0.010900960649762835
+        },
+        "up_to_down": {
+          "ratio": 0.3684210526315789,
+          "loss": 0.00853462889790535,
+          "identity_loss": 0.014316712816556295
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.307437615760136e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.616737325908616e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.543263927800581e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.078593972029921e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.5807474483153783e-05
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.8822330427356064e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 7.032294888631441e-07
+        }
+      },
+      "block_index": 25,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.3157894736842105,
+          "loss": 0.00568963946167366,
+          "identity_loss": 0.006179873357380266
+        },
+        "v_to_o": {
+          "ratio": 0.21052631578947367,
+          "loss": 0.0017842211527749896,
+          "identity_loss": 0.003987391944974661
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.009206633908408028,
+          "identity_loss": 0.011027238198689051
+        },
+        "up_to_down": {
+          "ratio": 0.5263157894736842,
+          "loss": 0.019863732159137726,
+          "identity_loss": 0.11078478892644246
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.5499781461112434e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.3876002564502414e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 8.790433639660478e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.369495852391992e-07
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 6.879807187942788e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.666042514145374e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 3.669825309771113e-05
+        }
+      },
+      "block_index": 26,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    },
+    {
+      "transforms": {
+        "input_layernorm_to_qkv": {
+          "objective": "attention_output",
+          "ratio": 0.2631578947368421,
+          "loss": 0.008371430452599193,
+          "identity_loss": 0.012261021104487744
+        },
+        "v_to_o": {
+          "ratio": 0.05263157894736842,
+          "loss": 0.004328688606619835,
+          "identity_loss": 0.017956595867872238
+        },
+        "post_attention_layernorm_to_gate_up": {
+          "ratio": 0.2631578947368421,
+          "loss": 0.012026457275663103,
+          "identity_loss": 0.015952883447919574
+        },
+        "up_to_down": {
+          "ratio": 0.3157894736842105,
+          "loss": 0.02104702591896057,
+          "identity_loss": 0.07194151977698009
+        }
+      },
+      "clipping": {
+        "self_attn.q_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.799031108224881e-06
+        },
+        "self_attn.k_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 4.036829523101915e-06
+        },
+        "self_attn.v_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 9.553474956192076e-05
+        },
+        "self_attn.o_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 1.8679513686947757e-06
+        },
+        "mlp.gate_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 8.134811650961637e-06
+        },
+        "mlp.up_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 2.9939867090433836e-05
+        },
+        "mlp.down_proj": {
+          "mean_ratio": 1.0,
+          "fraction_clipped": 0.0,
+          "mean_loss": 5.125705683894921e-06
+        }
+      },
+      "block_index": 27,
+      "scale_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "scale_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      },
+      "clipping_search_recollected_after_scale_migration": false,
+      "activation_sampling_strategy": "prefix",
+      "activation_sampling_seed": 42,
+      "clipping_search_sampled_linears": [
+        "mlp.down_proj",
+        "mlp.gate_proj",
+        "mlp.up_proj",
+        "self_attn.k_proj",
+        "self_attn.o_proj",
+        "self_attn.q_proj",
+        "self_attn.v_proj"
+      ],
+      "clipping_search_observed_tokens": {
+        "self_attn.q_proj": 25970,
+        "self_attn.k_proj": 25970,
+        "self_attn.v_proj": 25970,
+        "self_attn.o_proj": 25970,
+        "mlp.gate_proj": 25970,
+        "mlp.up_proj": 25970,
+        "mlp.down_proj": 25970
+      }
+    }
+  ],
+  "checkpoint": "/root/autodl-tmp/qwen2-int4-systems/artifacts/qwen2-1.5b-w4g64-awq-canonical-v7-gpu-r1/model.safetensors",
+  "quantization_report": "/root/autodl-tmp/qwen2-int4-systems/artifacts/qwen2-1.5b-w4g64-awq-canonical-v7-gpu-r1/quantization-report.json"
+}

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "gate": "frozen_v6_operator_parity",
+  "status": "passed",
+  "observed_at": "2026-08-31",
+  "checkpoint": {
+    "sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+    "format_version": "qwen-int4-awq-v1",
+    "group_size": 64,
+    "quantization": "canonical_awq_w4a16_asymmetric",
+    "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+    "zero_point": "canonical_signed_packed_per_group"
+  },
+  "reference": "qwen_int4.backends.torch_reference_linear",
+  "operator": "qwen_int4.triton_kernels.linear_canonical_w4g64_triton",
+  "cases": [
+    {
+      "layer": "model.layers.0.self_attn.v_proj",
+      "shape_mnk": [1, 256, 1536],
+      "activation_dtype": "float16",
+      "rtol": 0.01,
+      "atol": 0.0625,
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0,
+      "cosine": 1.0000001192092896
+    },
+    {
+      "layer": "model.layers.0.self_attn.q_proj",
+      "shape_mnk": [8, 1536, 1536],
+      "activation_dtype": "bfloat16",
+      "rtol": 0.02,
+      "atol": 0.25,
+      "max_abs": 0.001953125,
+      "mean_abs": 4.1855187760120316e-07,
+      "rmse": 2.6475201593711972e-05,
+      "cosine": 1.0000019073486328
+    },
+    {
+      "layer": "model.layers.0.mlp.down_proj",
+      "shape_mnk": [4, 1536, 8960],
+      "activation_dtype": "float16",
+      "rtol": 0.01,
+      "atol": 0.0625,
+      "max_abs": 0.0009765625,
+      "mean_abs": 1.1450611054897308e-06,
+      "rmse": 2.7534251785255037e-05,
+      "cosine": 0.9999992847442627
+    }
+  ],
+  "limitations": [
+    "Only the listed layer-0 representative tensors were tested.",
+    "No end-to-end model execution was performed.",
+    "The fixed tile was not autotuned.",
+    "No latency, throughput, memory, or benchmark result was collected."
+  ]
+}

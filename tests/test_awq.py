@@ -7,6 +7,8 @@ from torch import nn
 
 from qwen_int4.awq import (
     fake_quantize_asymmetric,
+    search_awq_scales_by_module_output,
+    search_gqa_v_to_o_scales,
     search_awq_scales,
     search_groupwise_clipping,
 )
@@ -44,6 +46,28 @@ def test_activation_collector_is_channelwise_and_memory_bounded():
     torch.testing.assert_close(statistics["0"].mean_abs, values.abs().mean(dim=(0, 1)))
     assert samples["0"].shape == (3, 4)
     assert samples["2"].shape == (3, 3)
+
+
+def test_activation_collector_reservoir_is_deterministic_and_covers_late_tokens():
+    model = nn.Linear(1, 1, bias=False)
+    model.weight.data.fill_(1.0)
+    first = torch.arange(5, dtype=torch.float32).view(1, 5, 1)
+    second = torch.arange(5, 50, dtype=torch.float32).view(1, 45, 1)
+
+    collected = []
+    for _ in range(2):
+        collector = ActivationCollector(
+            max_cached_tokens=4, sampling_strategy="reservoir", sample_seed=42
+        )
+        collector.attach(model)
+        model(first)
+        model(second)
+        collector.detach()
+        collected.append(collector.samples()[""])
+
+    torch.testing.assert_close(collected[0], collected[1])
+    assert collected[0].shape == (4, 1)
+    assert collected[0].max().item() > first.max().item()
 
 
 def test_sequential_calibration_releases_each_block_hook():
@@ -128,6 +152,27 @@ def test_gqa_v_to_o_scale_expansion_is_function_equivalent():
     torch.testing.assert_close(attention_value_path(), expected, rtol=1e-5, atol=1e-6)
 
 
+def test_gqa_v_to_o_search_returns_base_kv_channels_and_preserves_modules():
+    torch.manual_seed(40)
+    projection = nn.Linear(8, 5, bias=False)
+    original = projection.weight.detach().clone()
+    inputs = torch.randn(2, 3, 8)
+
+    result = search_gqa_v_to_o_scales(
+        inputs,
+        projection,
+        num_attention_heads=4,
+        num_key_value_heads=2,
+        group_size=4,
+        grid_points=6,
+    )
+
+    assert result.scales.shape == (4,)
+    assert torch.all(result.scales > 0)
+    assert result.loss <= result.identity_loss
+    torch.testing.assert_close(projection.weight, original)
+
+
 def test_module_snapshot_restores_state_after_failure():
     module = nn.Linear(4, 3)
     original = copy.deepcopy(module.state_dict())
@@ -155,6 +200,30 @@ def test_awq_search_does_not_mutate_weights_and_never_loses_to_identity():
     assert result.loss <= result.identity_loss
     for linear, weight in zip(linears, original):
         torch.testing.assert_close(linear.weight, weight)
+
+
+def test_module_output_awq_search_restores_weights_and_never_loses_to_identity():
+    torch.manual_seed(6)
+    first = nn.Linear(8, 6, bias=False)
+    second = nn.Linear(8, 4, bias=False)
+    original = [first.weight.detach().clone(), second.weight.detach().clone()]
+    batches = (torch.randn(1, 5, 8), torch.randn(1, 3, 8))
+
+    def forward_batch(_index: int, values: torch.Tensor) -> torch.Tensor:
+        return torch.cat((torch.tanh(first(values)), second(values)), dim=-1)
+
+    result = search_awq_scales_by_module_output(
+        batches,
+        (first, second),
+        forward_batch,
+        group_size=4,
+        grid_points=6,
+    )
+
+    assert result.scales.shape == (8,)
+    assert result.loss <= result.identity_loss
+    torch.testing.assert_close(first.weight, original[0])
+    torch.testing.assert_close(second.weight, original[1])
 
 
 def test_asymmetric_fake_quantization_and_qwen2_mapping_inventory():

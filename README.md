@@ -9,8 +9,8 @@ inference research. The repository currently provides:
 - explicit backend selection without import-time environment variables;
 - Qwen2 RMSNorm, RoPE, GQA, causal attention, SwiGLU, and CausalLM components;
 - checkpoint inspection, packing validation, quality evaluation, and tests;
-- a frozen W4G64 RTN baseline for fair AWQ comparisons.
-- a pinned mature AWQ reference recipe awaiting NVIDIA GPU validation.
+- a frozen W4G64 RTN baseline for historical AWQ comparisons;
+- a frozen canonical W4G64 asymmetric AWQ v6 candidate for correctness work.
 
 Triton kernels, KV caching, and performance claims are intentionally out of
 scope until the AWQ checkpoint contract and quality gate are frozen. The current
@@ -18,7 +18,7 @@ LPU backend is a functional model, not a real hardware runtime.
 
 ## Current baseline
 
-The recommended checkpoint is:
+The frozen historical RTN baseline is:
 
 ```text
 artifacts/qwen2-1.5b-w4g64-rtn-v4/model.safetensors
@@ -45,6 +45,14 @@ Verified properties:
 The checkpoint contains only trusted `qweight`, `scales`, and `zeros` tensors.
 Embedding, normalization, bias, and tied LM-head parameters are loaded from the
 pinned official Hugging Face model.
+
+The selected canonical AWQ candidate is v6, stored remotely rather than in the
+repository. Its checkpoint SHA-256 is
+`131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6`.
+It passed the final full-corpus Phase C perplexity-ratio gate on WikiText-2
+(`1.037654`) and the independent Chinese corpus (`1.039845`). Its final-logits
+cosine is `0.9997767806053162`, above the `0.9997` gate. See
+[Phase D canonical AWQ](docs/phase-d-canonical-awq.md).
 
 ## Quality snapshot
 
@@ -177,8 +185,8 @@ Phase B selects vLLM Project LLM Compressor 0.13.0 as the external W4G128 AWQ
 oracle. The repository includes a frozen asymmetric recipe, a separate NVIDIA
 Linux environment, and fail-closed quantization and evaluation entry points.
 The native compressed-tensors format is preserved and is not assumed to match
-this project's canonical packing. The current Mac cannot execute the CUDA run,
-so the artifact is explicitly marked `pending_gpu_validation`.
+this project's canonical packing. The reference completed execution but failed
+the project's `<= 1.05` quality gate in the final Phase C comparison.
 
 See [Mature AWQ reference](docs/awq-reference.md) for the decision record and
 NVIDIA commands.
@@ -187,19 +195,16 @@ NVIDIA commands.
 
 Phase C freezes the complete WikiText-2 test split, an independent Chinese
 corpus, and deterministic multilingual/code/reasoning/long-context generation
-cases. A single runner applies identical tokenization, scoring, and decoding to
-BF16, RTN, external AWQ, and future canonical self-AWQ rows. The protocol is
-ready, while the four-row NVIDIA result remains pending.
+cases. The completed v3 run compares BF16, external AWQ, and canonical v6;
+the original RTN-containing v1 matrix remains historical and incomplete.
 
 See [Phase C unified quality evaluation](docs/phase-c-evaluation.md).
 
 ## Canonical self-AWQ development
 
-Phase D has started with CPU-testable calibration, Qwen2-aware scale migration,
-recoverable scale and clipping searches, and a versioned asymmetric W4G128
-canonical export contract. The implementation is marked
-`awaiting_gpu_reference`; it is not yet a completed AWQ checkpoint or quality
-claim.
+Phase D selected and froze canonical AWQ v6 after targeted GPU experiments,
+parity validation, and Phase C v3. Phase E is unblocked for correctness-only
+work; it does not authorize performance claims.
 
 See [Phase D canonical AWQ](docs/phase-d-canonical-awq.md).
 

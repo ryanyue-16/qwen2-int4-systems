@@ -19,11 +19,11 @@ or real-LPU claim is part of phase A.
 - [x] Freeze the W4G128 asymmetric recipe, calibration source, and native format.
 - [x] Add an isolated, version-pinned NVIDIA Linux environment.
 - [x] Add fail-closed quantization and quality-evaluation entry points.
-- [ ] Produce and validate the native checkpoint on an NVIDIA Linux host.
+- [x] Produce and validate the native checkpoint on an NVIDIA Linux host.
 
 The selected oracle is LLM Compressor 0.13.0 with native compressed-tensors
-export. The local status is `pending_gpu_validation`; no reference quality or
-performance number has been fabricated. See `docs/awq-reference.md`.
+export. It completed NVIDIA execution, but its final Phase C quality ratios did
+not meet the `<= 1.05` selection gate. See `docs/awq-reference.md`.
 
 ## Phase C — Unified quality evaluation
 
@@ -31,10 +31,11 @@ performance number has been fabricated. See `docs/awq-reference.md`.
 - [x] Expand deterministic English, Chinese, code, math/logic, and long-context cases.
 - [x] Enforce shared tokenization, scoring, decoding, checksum, and isolation rules.
 - [x] Add a unified fail-closed runner for BF16, RTN, reference AWQ, and self-AWQ.
-- [ ] Run all four model rows on one NVIDIA evaluation host and apply the gates.
+- [x] Run the user-approved narrowed three-model v3 matrix and apply the gates.
 
-The protocol is ready, but Phase C is not numerically complete while the Phase B
-reference and Phase D checkpoints are absent. See `docs/phase-c-evaluation.md`.
+The original four-row v1 matrix remains historical and incomplete because the
+RTN baseline was intentionally removed from remote execution. V3 is complete
+for its documented narrowed scope. See `docs/phase-c-evaluation.md`.
 
 ## Phase D — Canonical self-AWQ
 
@@ -44,50 +45,47 @@ reference and Phase D checkpoints are absent. See `docs/phase-c-evaluation.md`.
 - [x] Add activation-weighted group-wise clipping search.
 - [x] Add asymmetric canonical W4G128 packing, zero points, and export metadata.
 - [x] Add CPU unit gates for transformations, search safety, and export loading.
-- [ ] Run end-to-end Qwen2 calibration and validate against the NVIDIA reference.
-- [ ] Pass the complete Phase C quality matrix and freeze the final checkpoint.
+- [x] Run end-to-end Qwen2 calibration and validate v6 against the HF reference.
+- [x] Pass the narrowed Phase C v3 quality gates and freeze the v6 checkpoint contract.
 
-The current status is `awaiting_gpu_reference`; CPU implementation progress is
-not a reference-quality claim. See `docs/phase-d-canonical-awq.md`.
+The selected v6 manifest is the sole input contract for Phase E. Phase D does
+not establish a kernel or performance result. See `docs/phase-d-canonical-awq.md`.
 
-## Phase 1 — Recovered reference repository (current)
+## Phase E — Triton W4A16 kernel
 
-- [x] Inspect the 730-tensor checkpoint contract.
-- [x] Make the legacy signed-add packing rule explicit.
-- [x] Add canonical and legacy pack/unpack round-trip tests.
-- [x] Add strict, fail-closed checkpoint loading.
-- [x] Replace environment-variable dispatch with explicit backends.
-- [x] Run full-model CPU smoke tests for torch and LPU functional paths.
-- [x] Compare dequantized sampled weights with the original BF16 model (failed: cosine approximately zero).
-- [x] Add intermediate activation capture and first-divergence reports.
+- [x] Freeze the W4G64 asymmetric kernel correctness specification and tests.
+- [x] Validate the remote Triton/CUDA development environment without benchmarks.
+- [x] Implement and validate standalone canonical packed signed-INT4 unpacking.
+- [x] Implement and validate per-group asymmetric W4G64 dequantization.
+- [x] Implement the correctness-first fused W4A16 linear operator.
+- [x] Prove numerical parity with the canonical PyTorch backend at representative Qwen2 shapes.
+- [x] Verify operator parity on representative tensors from the frozen v6 checkpoint.
+- [x] Run fail-closed operator autotuning only after all numerical correctness gates pass.
 
-Exit criterion: packing format is independently confirmed and Qwen2 architecture parity is measured layer by layer.
+Exit criterion: the Triton operator meets the documented numerical contract for
+canonical v6 data. This does not establish latency, throughput, or production
+performance. See `docs/phase-e-triton.md` and `docs/phase-e-autotune.md`.
 
-The old checkpoint remains blocked. The selected replacement is the canonical
-W4G64 RTN v4 checkpoint. Backend/architecture parity reaches `0.99987543`
-final-logits cosine. Two held-out smoke corpora show lower NLL than W4G128;
-activation clipping was rejected because its gain did not reproduce. See
-`docs/quality-analysis.md`.
+## Phase F — Complete inference optimization
 
-## Phase 2 — Triton learning path
+- [x] Add correctness-tested KV cache and separate prefill/decode execution paths.
+- [x] Add left-padded batching and correctness-tested hybrid Triton model integration.
+- [x] Add request reorder/removal, cache release, and an 11-case model correctness matrix.
+- [x] Run reproducible operator, layer, prefill, decode, batching, and model benchmarks.
+- [x] Capture warmup, synchronization, percentile, memory, and environment evidence.
 
-- [ ] FP16/BF16 tiled GEMM.
-- [ ] Standalone packed INT4 unpack kernel.
-- [ ] Group-wise dequantization kernel.
-- [ ] Fused load → unpack → scale → GEMM W4A16 kernel.
-- [ ] Autotune `BLOCK_M`, `BLOCK_N`, `BLOCK_K`, and `num_warps` only after correctness passes.
+Exit criterion: reproducible evidence can answer whether the complete inference
+stack works, how it performs, and what quality trade-offs remain.
 
-Exit criterion: Triton matches the PyTorch reference under documented tolerances for representative Qwen2 linear shapes.
+Phase F correctness and benchmark boundaries are documented in
+`docs/phase-f-inference.md`; final evidence is summarized in
+`docs/phase-f-report.md`.
 
-## Phase 3 — Inference and evaluation
+## Phase G — LPU mapping and enterprise delivery
 
-- [ ] KV cache and separate prefill/decode paths.
-- [ ] Kernel, operator, layer, prefill, and decode benchmarks.
-- [ ] Warmup, synchronization, percentiles, environment manifest, and peak memory reporting.
-- [x] Initial BF16 versus W4A16 held-out NLL/perplexity evaluation.
-- [x] 2K-token WikiText-2 sliding-window quality gate.
-- [x] Deterministic Chinese/English/code/arithmetic generation smoke suite.
-- [ ] Broader task-specific evaluation before any production claim.
-- [ ] Compare with one production W4 backend as context, without using its kernel as this project's implementation.
+- [ ] Map the validated computation to an explicitly documented LPU dataflow.
+- [ ] Add artifact registry, CI, nightly regression, and dashboard workflows.
+- [ ] Define release evidence, ownership, and operational safeguards.
 
-Exit criterion: the repository can answer “does it work, is it faster, and how much quality is lost?” with reproducible evidence.
+Phase G may not claim real-LPU performance until a separately validated runtime
+and measurement protocol exist.

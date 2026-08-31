@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "operator": "canonical_asymmetric_w4g64_linear",
+  "status": "correctness_passed",
+  "observed_at": "2026-08-31",
+  "implementation": {
+    "backend": "triton",
+    "accumulation_dtype": "float32",
+    "dot_input_precision": "ieee",
+    "tile": {
+      "block_m": 16,
+      "block_n": 32,
+      "block_k": 64
+    },
+    "autotuned": false
+  },
+  "contract": {
+    "group_size": 64,
+    "quantization": "canonical_awq_asymmetric",
+    "formula": "activation @ (((signed_code - signed_zero) * scale).T) + bias",
+    "reference": "qwen_int4.backends.torch_reference_linear"
+  },
+  "validation": {
+    "environment_report": "results/phase_e_triton_environment_v1.json",
+    "unpack_evidence": "results/phase_e_triton_unpack_v1.json",
+    "dequant_evidence": "results/phase_e_triton_dequant_v1.json",
+    "test_path": "tests/test_triton_unpack.py",
+    "command": "PYTHONPATH=src python -m pytest tests/test_triton_unpack.py",
+    "result": "15 passed",
+    "representative_shapes": [
+      {
+        "name": "v_projection",
+        "shape_mnk": [1, 256, 1536],
+        "activation_dtype": "float16",
+        "rtol": 0.01,
+        "atol": 0.0625
+      },
+      {
+        "name": "q_projection",
+        "shape_mnk": [8, 1536, 1536],
+        "activation_dtype": "bfloat16",
+        "rtol": 0.02,
+        "atol": 0.25
+      },
+      {
+        "name": "mlp_down_projection",
+        "shape_mnk": [4, 1536, 8960],
+        "activation_dtype": "float16",
+        "rtol": 0.01,
+        "atol": 0.0625
+      }
+    ],
+    "additional_inputs": [
+      "zero",
+      "alternating_sign",
+      "bounded_large_magnitude"
+    ]
+  },
+  "limitations": [
+    "The fixed tile was not autotuned.",
+    "No latency, throughput, memory, or benchmark result was collected.",
+    "This operator-level evidence does not establish end-to-end model parity or production readiness."
+  ]
+}

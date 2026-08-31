@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "status": "correctness_validated_autotune_authorized",
+  "artifact_id": "qwen2-1.5b-w4g64-awq-canonical-v6",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "group_size": 64,
+  "warmup_iterations": 20,
+  "measurement_iterations": 100,
+  "candidates": [
+    {"block_m": 8, "block_n": 32, "num_warps": 2, "num_stages": 3},
+    {"block_m": 16, "block_n": 32, "num_warps": 4, "num_stages": 3},
+    {"block_m": 16, "block_n": 64, "num_warps": 4, "num_stages": 3},
+    {"block_m": 16, "block_n": 64, "num_warps": 8, "num_stages": 3},
+    {"block_m": 32, "block_n": 64, "num_warps": 4, "num_stages": 4}
+  ],
+  "profiles": [
+    {"name": "v_projection_fp16", "shape_mnk": [1, 256, 1536], "dtype": "float16", "rtol": 0.01, "atol": 0.0625},
+    {"name": "q_projection_bf16", "shape_mnk": [8, 1536, 1536], "dtype": "bfloat16", "rtol": 0.02, "atol": 0.25},
+    {"name": "mlp_down_projection_fp16", "shape_mnk": [4, 1536, 8960], "dtype": "float16", "rtol": 0.01, "atol": 0.0625}
+  ],
+  "selection": "lowest_median_ms_among_candidates_that_pass_every_parity_check_for_the_profile"
+}

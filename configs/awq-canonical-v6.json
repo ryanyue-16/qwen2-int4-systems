@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "artifact_id": "qwen2-1.5b-w4g64-awq-canonical-v6",
+  "status": "awaiting_gpu_reference",
+  "model": {
+    "id": "Qwen/Qwen2-1.5B",
+    "revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+    "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a"
+  },
+  "quantization": {
+    "method": "canonical_awq",
+    "weight_bits": 4,
+    "activation_bits": 16,
+    "group_size": 64,
+    "symmetric": false,
+    "zero_point": "canonical_signed_packed_per_group",
+    "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+    "scale_search_grid_points": 20,
+    "duo_scaling": true,
+    "clip_ratios": [1.0]
+  },
+  "calibration": {
+    "source": "huggingface_dataset",
+    "dataset": "Salesforce/wikitext",
+    "config": "wikitext-2-raw-v1",
+    "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "split": "train",
+    "text_column": "text",
+    "seed": 42,
+    "samples": 256,
+    "max_sequence_length": 512,
+    "add_special_tokens": false,
+    "max_cached_tokens_per_linear": 512,
+    "sequential_blocks": true,
+    "recollect_after_scale_migration": false
+  },
+  "output_directory": "artifacts/qwen2-1.5b-w4g64-awq-canonical-v6"
+}

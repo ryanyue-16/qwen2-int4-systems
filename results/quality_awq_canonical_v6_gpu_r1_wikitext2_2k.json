@@ -1,0 +1,30 @@
+{
+  "hf_model": "Qwen/Qwen2-1.5B",
+  "hf_model_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+  "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+  "text": "data/wikitext2_test_100rows.txt",
+  "tokens": 2048,
+  "checkpoint": "artifacts/qwen2-1.5b-w4g64-awq-canonical-v6-gpu-r1/model.safetensors",
+  "packing": "canonical",
+  "group_size": 64,
+  "bf16": {
+    "nll": 2.4681366369324773,
+    "perplexity": 11.800437852561437,
+    "predictions": 2047,
+    "windows": 16,
+    "window_size": 256,
+    "stride": 128
+  },
+  "int4": {
+    "nll": 2.516183917442065,
+    "perplexity": 12.381258493259864,
+    "predictions": 2047,
+    "windows": 16,
+    "window_size": 256,
+    "stride": 128
+  },
+  "delta_nll": 0.04804728050958751,
+  "perplexity_ratio": 1.0492202618203994,
+  "top1_agreement": 0.8905715942382812,
+  "target_log_prob_mae": 0.2042868435382843
+}

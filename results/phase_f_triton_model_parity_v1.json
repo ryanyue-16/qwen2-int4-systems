@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "phase": "F",
+  "gate": "full_model_triton_cache_parity",
+  "status": "passed",
+  "observed_at": "2026-08-31",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "execution_contract": {
+    "fp16_bf16_canonical_w4g64_linear": "triton_ieee_fp32_accumulation",
+    "fp32_swiglu_down_projection": "pytorch_reference_fallback",
+    "fallback_is_explicit": true,
+    "full_triton_claim": false
+  },
+  "input_shape": [1, 4],
+  "logits_metrics": {
+    "shape": [1, 4, 151936],
+    "max_abs": 0.21875,
+    "mean_abs": 0.03194073587656021,
+    "rmse": 0.04058052599430084,
+    "mean_relative": 0.08877993375062943,
+    "cosine": 0.9998782873153687
+  },
+  "cached_greedy_tokens": [[9707, 11, 791, 47, 271, 9707]],
+  "cached_generation_matches_pytorch": true,
+  "limitations": [
+    "This is a correctness result for one deterministic prompt.",
+    "The FP32 SwiGLU down-projection path uses an explicit PyTorch reference fallback.",
+    "No latency, throughput, memory, or production-performance result is reported."
+  ]
+}

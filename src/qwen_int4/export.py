@@ -1,4 +1,4 @@
-"""Canonical W4G128 AWQ checkpoint construction and versioned serialization."""
+"""Canonical asymmetric AWQ checkpoint construction and versioned serialization."""
 
 from __future__ import annotations
 
@@ -36,8 +36,8 @@ class CanonicalAWQExport:
 
 
 def canonical_awq_metadata(*, group_size: int = 128) -> dict[str, str]:
-    if group_size != 128:
-        raise ValueError("the Phase D canonical AWQ contract requires group size 128")
+    if group_size not in {64, 128}:
+        raise ValueError("canonical AWQ supports group sizes 64 and 128")
     return {
         "format_version": AWQ_FORMAT_VERSION,
         "source_model": HF_MODEL_ID,
@@ -46,7 +46,7 @@ def canonical_awq_metadata(*, group_size: int = 128) -> dict[str, str]:
         "quantization": "canonical_awq_w4a16_asymmetric",
         "bits": "4",
         "activation_dtype": "bf16_or_fp16",
-        "group_size": "128",
+        "group_size": str(group_size),
         "code_range": "[-8,7]",
         "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
         "weight_layout": "row_major_[out_features,in_features]",

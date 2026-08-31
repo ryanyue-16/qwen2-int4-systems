@@ -5,9 +5,10 @@ from __future__ import annotations
 import torch
 
 from .quantization import PackingFormat, dequantize_groupwise, unpack_int4
+from .triton_kernels import linear_canonical_w4g64_triton, triton_available
 
 
-SUPPORTED_BACKENDS = ("torch", "lpu")
+SUPPORTED_BACKENDS = ("torch", "lpu", "triton")
 
 
 def torch_reference_linear(
@@ -77,3 +78,34 @@ def lpu_functional_linear(
     if bias is not None:
         accumulator.add_(bias.to(torch.float32))
     return accumulator.reshape(*x.shape[:-1], out_features).to(x.dtype)
+
+
+def triton_w4g64_linear(
+    x: torch.Tensor,
+    qweight: torch.Tensor,
+    scales: torch.Tensor,
+    zeros: torch.Tensor,
+    bias: torch.Tensor | None,
+    *,
+    out_features: int,
+    in_features: int,
+    group_size: int,
+    packing: PackingFormat,
+) -> torch.Tensor:
+    """Dispatch canonical asymmetric W4G64 linear to the Phase E Triton operator."""
+    if not triton_available():
+        raise RuntimeError("Triton backend requires CUDA and a Triton installation")
+    if packing is not PackingFormat.CANONICAL or group_size != 64:
+        raise ValueError("Triton backend supports only canonical asymmetric W4G64 tensors")
+    if x.shape[-1] != in_features:
+        raise ValueError("activation feature dimension does not match QuantLinear")
+    if x.dtype == torch.float32:
+        return torch_reference_linear(
+            x, qweight, scales, zeros, bias,
+            out_features=out_features, in_features=in_features,
+            group_size=group_size, packing=packing,
+        )
+    output = linear_canonical_w4g64_triton(
+        x.reshape(-1, in_features).contiguous(), qweight, scales, zeros, bias
+    )
+    return output.reshape(*x.shape[:-1], out_features)

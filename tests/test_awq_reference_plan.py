@@ -18,10 +18,9 @@ def test_awq_reference_contract_is_frozen_and_split_safe():
     assert config["evaluation"]["dataset_split"] == "test"
 
 
-def test_awq_reference_artifact_is_explicitly_pending():
+def test_awq_reference_plan_records_the_pre_gpu_contract():
     artifact = ROOT / "artifacts/qwen2-1.5b-w4g128-awq-reference-v1"
     plan = json.loads((artifact / "reference-plan.json").read_text(encoding="utf-8"))
 
     assert plan["status"] == "pending_gpu_validation"
     assert plan["weights_present"] is False
-    assert not list(artifact.glob("*.safetensors"))

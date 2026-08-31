@@ -1,0 +1,23 @@
+{
+  "schema_version": "qwen-int4-awq-artifact-manifest-v1",
+  "artifact_id": "qwen2-1.5b-w4g64-awq-canonical-v6",
+  "status": "frozen_phase_d_candidate",
+  "artifact": {
+    "storage": "remote-only; model weights are intentionally not stored in this repository",
+    "remote_path": "/root/autodl-tmp/qwen2-int4-systems/artifacts/qwen2-1.5b-w4g64-awq-canonical-v6-gpu-r1/model.safetensors",
+    "sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+    "size_bytes": 706537936
+  },
+  "upstream": {"model_id": "Qwen/Qwen2-1.5B", "model_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a", "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a"},
+  "quantization_contract": {"format_version": "qwen-int4-awq-v1", "bits": 4, "group_size": 64, "quantization": "canonical_awq_asymmetric", "zero_point": "per-group asymmetric", "packing": "canonical signed INT4 packing"},
+  "selection": {"selected_variant": "v6", "rejected_variant": "v7", "decision": "v6 is the only canonical candidate that passed the frozen 2K and full-corpus perplexity-ratio gates.", "phase_e_eligibility": "correctness-only work; no performance claim is authorized by this manifest"},
+  "gates": {"two_k_wikitext2_perplexity_ratio_max": 1.05, "two_k_wikitext2_perplexity_ratio": 1.04922026182, "full_wikitext2_perplexity_ratio_max": 1.05, "full_wikitext2_perplexity_ratio": 1.037654, "full_chinese_perplexity_ratio_max": 1.05, "full_chinese_perplexity_ratio": 1.039845, "final_logits_cosine_min": 0.9997, "final_logits_cosine": 0.9997767806053162, "all_reported_metrics_finite": true, "generation_manual_review": "completed; no empty output or replacement characters, while quantization-induced divergence remains recorded in the Phase C report"},
+  "evidence": {
+    "recipe": {"path": "configs/awq-canonical-v6.json", "sha256": "627258aad26a815a6f41ca4d16dc8fed6087210bce2fa1c3b0a9e78b0071a457"},
+    "calibration": {"path": "results/awq_canonical_v6_gpu_r1_calibration.json", "sha256": "905b8e23ccbfe3c13f58d78123cf2085c0233ab4b1552d4e1d89378808375b45"},
+    "quantization": {"path": "results/awq_canonical_v6_gpu_r1_quantization.json", "sha256": "3ea65ea6a50a45f17ca92aaa1ef3b7635ec7e841a75991d63227a42af7141662"},
+    "two_k_quality": {"path": "results/quality_awq_canonical_v6_gpu_r1_wikitext2_2k.json", "sha256": "72765bddceea06f2a3623bd7c33d444fededf66b2c869f2f0667fbabfe1b697e"},
+    "architecture_parity": {"path": "results/hf_validation_awq_canonical_v6_gpu_r3.json", "sha256": "3bc25db55ca1d5b45293dc5d9c1da27fa10f3628960f3376aaed29f28520203d"},
+    "phase_c_final": {"path": "results/phase_c_evaluation_v3_gpu_run1.json", "sha256": "febfb6681bb168e455ec0f3064b5283bb471d5d5e5568b2b5b2ca3191d32b12c", "config_path": "configs/phase-c-evaluation-v3.json", "config_sha256": "ffce62b192bea662a8576b21f57836722aee0b25cd95d95b2b0a474935518cef"}
+  }
+}

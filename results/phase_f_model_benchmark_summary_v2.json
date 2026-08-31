@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "phase": "F",
+  "status": "completed",
+  "observed_at": "2026-08-31",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "config": {
+    "path": "configs/phase-f-model-benchmark-v2.json",
+    "sha256": "04c77881572f8cd799140f0cf874feb94f3d471d2e1937160bc2ef64ca6e252d"
+  },
+  "remote_full_report": {
+    "path": "results/phase_f_model_benchmark_v2.json",
+    "sha256": "8a478f17793bf046f31844a2980afc143c8dbeb6ea29778b13a26c8ae271809a"
+  },
+  "environment": {
+    "torch_version": "2.12.0+cu130",
+    "cuda_version": "13.0",
+    "gpu_name": "NVIDIA GeForce RTX 4090"
+  },
+  "warmup_iterations": 5,
+  "measurement_iterations": 30,
+  "profiles": [
+    {
+      "name": "batch1_short",
+      "shape": {"batch_size": 1, "prompt_tokens": 16, "new_tokens": 4},
+      "torch": {"prefill_p50_ms": 90.920444, "decode_p50_ms": 84.027294, "generation_p50_ms": 425.452042, "generation_tokens_per_second": 9.401765, "peak_allocated_memory_bytes": 1431710720},
+      "hybrid": {"prefill_p50_ms": 45.96032, "decode_p50_ms": 40.036352, "generation_p50_ms": 203.285072, "generation_tokens_per_second": 19.676801, "peak_allocated_memory_bytes": 1433021440},
+      "p50_speedup": {"prefill": 1.9782, "decode": 2.0988, "cached_generation": 2.0929}
+    },
+    {
+      "name": "batch1_context",
+      "shape": {"batch_size": 1, "prompt_tokens": 128, "new_tokens": 4},
+      "torch": {"prefill_p50_ms": 97.351711, "decode_p50_ms": 85.881714, "generation_p50_ms": 428.599808, "generation_tokens_per_second": 9.332715, "peak_allocated_memory_bytes": 1475970560},
+      "hybrid": {"prefill_p50_ms": 89.830338, "decode_p50_ms": 40.217712, "generation_p50_ms": 247.261169, "generation_tokens_per_second": 16.177227, "peak_allocated_memory_bytes": 1476691456},
+      "p50_speedup": {"prefill": 1.0837, "decode": 2.1354, "cached_generation": 1.7334}
+    },
+    {
+      "name": "batch4_short",
+      "shape": {"batch_size": 4, "prompt_tokens": 16, "new_tokens": 4},
+      "torch": {"prefill_p50_ms": 91.906158, "decode_p50_ms": 85.415951, "generation_p50_ms": 426.357773, "generation_tokens_per_second": 37.527169, "peak_allocated_memory_bytes": 1451462656},
+      "hybrid": {"prefill_p50_ms": 63.435104, "decode_p50_ms": 40.829952, "generation_p50_ms": 223.907837, "generation_tokens_per_second": 71.457972, "peak_allocated_memory_bytes": 1452183552},
+      "p50_speedup": {"prefill": 1.4489, "decode": 2.092, "cached_generation": 1.9042}
+    }
+  ],
+  "limitations": [
+    "The hybrid backend uses Triton for FP16/BF16 W4G64 linears and an explicit PyTorch fallback for FP32 SwiGLU down projections.",
+    "The PyTorch backend is a correctness reference that dequantizes full weights on every call, not a production baseline.",
+    "Results apply only to the frozen profiles and recorded RTX 4090 environment.",
+    "No production-service, multi-GPU, real-LPU, or all-Triton performance claim is made."
+  ]
+}

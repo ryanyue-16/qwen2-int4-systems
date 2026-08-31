@@ -26,8 +26,8 @@ compression and vLLM deployment path used here.
 | Calibration | 256 deterministic WikiText-2 raw train samples, 512 tokens maximum |
 | Pipeline | Sequential onloading |
 | Export | Native `compressed-tensors` `pack_quantized` |
-| Serving validation | Native checkpoint loaded by `vllm==0.27.1` |
-| Current status | `pending_gpu_validation` |
+| Serving validation | Native checkpoint loaded by `vllm==0.27.1` in a separate runtime environment |
+| Current status | Executed; not selected because final Phase C PPL ratios exceed `1.05` |
 
 The official [AWQ recipe](https://docs.vllm.ai/projects/llm-compressor/en/latest/examples/awq/)
 pairs `AWQModifier` with `QuantizationModifier`, uses `W4A16_ASYM`, and leaves
@@ -64,6 +64,13 @@ vLLM runtime decision based on the installed build and GPU; this repository does
 not claim a specific GEMM/GEMV kernel until the NVIDIA run records it. The
 [vLLM package](https://pypi.org/project/vllm/0.27.1/) supports Qwen models,
 AWQ, and compressed-tensors.
+
+LLM Compressor and vLLM are deliberately installed in separate environments.
+`llmcompressor==0.13.0` requires `compressed-tensors==0.18.0`, whereas
+`vllm==0.27.1` requires `compressed-tensors==0.17.0`; pip cannot resolve both
+strict requirements in one environment. The reference environment is therefore
+reserved for quantization and Transformers correctness evaluation, while the
+vLLM environment is reserved for native serving smoke tests.
 
 The selected LLM Compressor release requires Linux and a compatible CUDA-enabled
 PyTorch build. Its tagged
@@ -106,6 +113,8 @@ PYTHONPATH=src python scripts/evaluate_awq_reference.py \
 Run a native-format vLLM generation smoke test:
 
 ```bash
+conda env create -f environments/vllm-smoke-cu13.yml
+conda activate qwen-vllm-smoke
 python -m vllm.entrypoints.openai.api_server \
   --model artifacts/qwen2-1.5b-w4g128-awq-reference-v1 \
   --dtype bfloat16 \
@@ -113,7 +122,8 @@ python -m vllm.entrypoints.openai.api_server \
 ```
 
 After quantization, preserve the generated `runtime-manifest.json`, capture
-`python -m pip freeze`, and record the vLLM startup log. The artifact remains
-`pending_gpu_validation` until the checkpoint, quality report, native runtime
-smoke test, CUDA version, and GPU identity all exist. No numerical AWQ result is
-reported from the current macOS host.
+`python -m pip freeze`, and record the vLLM startup log. The execution evidence
+exists on the NVIDIA host. The reference remains an executed comparison rather
+than the selected artifact because its final Phase C PPL ratios are `1.064332`
+on WikiText-2 and `1.059479` on the independent Chinese corpus, both above the
+project's `<= 1.05` gate. No performance conclusion follows from this result.

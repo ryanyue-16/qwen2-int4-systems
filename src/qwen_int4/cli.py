@@ -1,4 +1,4 @@
-"""Correctness-oriented command line runner (no KV cache yet)."""
+"""Correctness-oriented command line runner with optional cached greedy decode."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ from .checkpoint import (
     group_size_from_checkpoint,
     packing_from_checkpoint,
 )
+from .generation import greedy_generate_cached
 from .model import QwenInt4ForCausalLM
 from .provenance import (
     HF_MODEL_ID,
@@ -55,7 +56,7 @@ def main() -> None:
     parser.add_argument("--config", default=str(project_root / "configs/qwen2-1.5b"))
     parser.add_argument("--hf-model", default=HF_MODEL_ID)
     parser.add_argument("--hf-revision", default=HF_MODEL_REVISION)
-    parser.add_argument("--backend", choices=("torch", "lpu"), default="torch")
+    parser.add_argument("--backend", choices=("torch", "lpu", "triton"), default="torch")
     parser.add_argument(
         "--packing",
         choices=["auto", *[item.value for item in PackingFormat]],
@@ -68,6 +69,7 @@ def main() -> None:
     parser.add_argument("--tokenizer", default=HF_TOKENIZER_ID)
     parser.add_argument("--tokenizer-revision", default=HF_TOKENIZER_REVISION)
     parser.add_argument("--max-new-tokens", type=int, default=0)
+    parser.add_argument("--use-cache", action="store_true", help="Use cached greedy decode when generating tokens.")
     args = parser.parse_args()
 
     metadata = checkpoint_metadata(args.checkpoint)
@@ -109,12 +111,15 @@ def main() -> None:
         input_ids = torch.tensor([args.input_ids], dtype=torch.long, device=args.device)
 
     with torch.inference_mode():
-        logits = model(input_ids)
-        for _ in range(args.max_new_tokens):
-            next_token = logits[:, -1].argmax(dim=-1, keepdim=True)
-            input_ids = torch.cat((input_ids, next_token), dim=-1)
-            # Correct but intentionally slow: decode currently recomputes the prefix.
+        if args.use_cache and args.max_new_tokens:
+            input_ids = greedy_generate_cached(model, input_ids, max_new_tokens=args.max_new_tokens)
             logits = model(input_ids)
+        else:
+            logits = model(input_ids)
+            for _ in range(args.max_new_tokens):
+                next_token = logits[:, -1].argmax(dim=-1, keepdim=True)
+                input_ids = torch.cat((input_ids, next_token), dim=-1)
+                logits = model(input_ids)
 
     print(f"input shape: {tuple(input_ids.shape)}")
     print(f"logits shape: {tuple(logits.shape)}")

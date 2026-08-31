@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "evaluation_id": "phase-c-evaluation-v2",
+  "status": "pending_model_runs",
+  "model": {
+    "id": "Qwen/Qwen2-1.5B",
+    "revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a",
+    "tokenizer_revision": "8a16abf2848eda07cc5253dec660bf1ce007ad7a"
+  },
+  "corpora": [
+    {
+      "id": "wikitext2_test_full",
+      "language": "english",
+      "path": "data/phase_c/wikitext2_test_full.txt",
+      "sha256": "90172ab2c5b6fce8f8a89a438733715ffef0989f220fac42e4fcfdd9757fe1f6",
+      "source_split": "test",
+      "calibration_allowed": false
+    },
+    {
+      "id": "chinese_eval_v1",
+      "language": "chinese",
+      "path": "data/phase_c/chinese_eval_v1.txt",
+      "sha256": "590a5dacceafbda5ca01f509c07999ad041d81c51fe64f17edce9075fa238afb",
+      "source_split": "project-authored-evaluation-only",
+      "calibration_allowed": false
+    }
+  ],
+  "generation": {
+    "path": "data/phase_c/generation_prompts_v1.json",
+    "sha256": "1494167d293db82128a4769b639eb191c7c92e6cca36db28b23616f758e2e164",
+    "do_sample": false,
+    "max_new_tokens": 32,
+    "add_special_tokens": false
+  },
+  "scoring": {
+    "window_size": 512,
+    "stride": 256,
+    "add_special_tokens": false,
+    "accumulation_dtype": "float64"
+  },
+  "models": [
+    {
+      "id": "bf16",
+      "kind": "huggingface_bf16",
+      "status": "ready"
+    },
+    {
+      "id": "w4g128_awq_reference_v1",
+      "kind": "compressed_tensors",
+      "status": "ready",
+      "checkpoint": "artifacts/qwen2-1.5b-w4g128-awq-reference-v1"
+    },
+    {
+      "id": "w4g64_awq_canonical_v6",
+      "kind": "qwen_int4_canonical",
+      "status": "ready",
+      "checkpoint": "artifacts/qwen2-1.5b-w4g64-awq-canonical-v6-gpu-r1/model.safetensors",
+      "sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6"
+    }
+  ],
+  "gates": {
+    "all_metrics_finite": true,
+    "canonical_awq_max_bf16_perplexity_ratio": 1.05,
+    "architecture_backend_min_cosine": 0.9998,
+    "generation_requires_manual_collapse_review": true
+  },
+  "calibration_inputs": [
+    {
+      "id": "reference_awq_wikitext2_train",
+      "dataset": "Salesforce/wikitext",
+      "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+      "split": "train"
+    },
+    {
+      "id": "canonical_awq_wikitext2_train_v6",
+      "dataset": "Salesforce/wikitext",
+      "revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+      "split": "train"
+    }
+  ]
+}

@@ -10,6 +10,10 @@ from .linear import QuantLinear
 from .quantization import PackingFormat
 
 
+PastKeyValue = tuple[torch.Tensor, torch.Tensor]
+PastKeyValues = tuple[PastKeyValue, ...]
+
+
 def rotate_half(x: torch.Tensor) -> torch.Tensor:
     first, second = x.chunk(2, dim=-1)
     return torch.cat((-second, first), dim=-1)
@@ -60,7 +64,9 @@ class QwenAttention(nn.Module):
         cos: torch.Tensor,
         sin: torch.Tensor,
         attention_mask: torch.Tensor | None,
-    ) -> torch.Tensor:
+        past_key_value: PastKeyValue | None = None,
+        use_cache: bool = False,
+    ) -> tuple[torch.Tensor, PastKeyValue | None]:
         batch, sequence, _ = hidden_states.shape
         q = self.q_proj(hidden_states).view(batch, sequence, self.num_heads, self.head_dim).transpose(1, 2)
         k = self.k_proj(hidden_states).view(batch, sequence, self.num_kv_heads, self.head_dim).transpose(1, 2)
@@ -69,21 +75,51 @@ class QwenAttention(nn.Module):
         sin = sin.unsqueeze(1)
         q = q * cos + rotate_half(q) * sin
         k = k * cos + rotate_half(k) * sin
+        past_length = 0
+        if past_key_value is not None:
+            past_k, past_v = past_key_value
+            expected = (batch, self.num_kv_heads, past_k.shape[2], self.head_dim)
+            if past_k.shape != expected or past_v.shape != expected:
+                raise ValueError("past key/value cache shape does not match this attention layer")
+            if past_k.device != k.device or past_v.device != v.device:
+                raise ValueError("past key/value cache must be on the attention device")
+            past_length = past_k.shape[2]
+            k = torch.cat((past_k, k), dim=2)
+            v = torch.cat((past_v, v), dim=2)
+        next_cache = (k, v) if use_cache else None
         k = k.repeat_interleave(self.num_kv_groups, dim=1)
         v = v.repeat_interleave(self.num_kv_groups, dim=1)
 
-        scores = (q.to(torch.float32) @ k.to(torch.float32).transpose(-2, -1)) * (self.head_dim ** -0.5)
-        causal = torch.triu(
-            torch.ones(sequence, sequence, dtype=torch.bool, device=hidden_states.device), diagonal=1
-        )
-        scores.masked_fill_(causal.view(1, 1, sequence, sequence), float("-inf"))
-        if attention_mask is not None:
-            key_is_padding = ~attention_mask.to(torch.bool).view(batch, 1, 1, sequence)
-            scores.masked_fill_(key_is_padding, float("-inf"))
-        probabilities = torch.softmax(scores, dim=-1, dtype=torch.float32)
-        output = probabilities @ v.to(torch.float32)
+        total_sequence = past_length + sequence
+        if past_length == 0 and (attention_mask is None or bool(attention_mask.all())):
+            output = F.scaled_dot_product_attention(
+                q,
+                k,
+                v,
+                dropout_p=0.0,
+                is_causal=True,
+                scale=self.head_dim ** -0.5,
+            )
+        else:
+            causal = torch.arange(total_sequence, device=hidden_states.device).view(1, -1)
+            causal = causal <= (past_length + torch.arange(sequence, device=hidden_states.device)).view(-1, 1)
+            if attention_mask is None:
+                key_is_valid = torch.ones((batch, 1, 1, total_sequence), dtype=torch.bool, device=hidden_states.device)
+            else:
+                if attention_mask.shape != (batch, total_sequence):
+                    raise ValueError("attention_mask must cover cached and current tokens")
+                key_is_valid = attention_mask.to(torch.bool).view(batch, 1, 1, total_sequence)
+            output = F.scaled_dot_product_attention(
+                q,
+                k,
+                v,
+                attn_mask=causal.view(1, 1, sequence, total_sequence) & key_is_valid,
+                dropout_p=0.0,
+                is_causal=False,
+                scale=self.head_dim ** -0.5,
+            )
         output = output.transpose(1, 2).contiguous().view(batch, sequence, self.hidden_size)
-        return self.o_proj(output.to(hidden_states.dtype))
+        return self.o_proj(output), next_cache
 
 
 class QwenMLP(nn.Module):
@@ -110,9 +146,12 @@ class DecoderLayer(nn.Module):
         self.post_attention_layernorm = RMSNorm(config.hidden_size, config.rms_norm_eps)
         self.mlp = QwenMLP(config, backend=backend, packing=packing, group_size=group_size)
 
-    def forward(self, x, cos, sin, attention_mask):
-        x = x + self.self_attn(self.input_layernorm(x), cos, sin, attention_mask)
-        return x + self.mlp(self.post_attention_layernorm(x))
+    def forward(self, x, cos, sin, attention_mask, past_key_value=None, use_cache=False):
+        attention_output, next_cache = self.self_attn(
+            self.input_layernorm(x), cos, sin, attention_mask, past_key_value, use_cache
+        )
+        x = x + attention_output
+        return x + self.mlp(self.post_attention_layernorm(x)), next_cache
 
 
 class QwenModel(nn.Module):
@@ -127,16 +166,37 @@ class QwenModel(nn.Module):
         head_dim = getattr(config, "head_dim", config.hidden_size // config.num_attention_heads)
         self.rotary_emb = RotaryEmbedding(head_dim, getattr(config, "rope_theta", 1_000_000.0))
 
-    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor | None = None,
+        past_key_values: PastKeyValues | None = None,
+        use_cache: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, PastKeyValues]:
+        if input_ids.ndim != 2:
+            raise ValueError("input_ids must have shape [batch, sequence]")
+        batch, sequence = input_ids.shape
+        if past_key_values is not None and len(past_key_values) != len(self.layers):
+            raise ValueError("past_key_values must contain one entry per decoder layer")
+        past_length = 0 if past_key_values is None else past_key_values[0][0].shape[2]
         hidden_states = self.embed_tokens(input_ids)
         if attention_mask is None:
-            attention_mask = torch.ones_like(input_ids, dtype=torch.bool)
+            attention_mask = torch.ones((batch, past_length + sequence), dtype=torch.bool, device=input_ids.device)
+        elif attention_mask.shape != (batch, past_length + sequence):
+            raise ValueError("attention_mask must cover cached and current tokens")
         position_ids = attention_mask.to(torch.long).cumsum(dim=-1) - 1
         position_ids.clamp_min_(0)
+        position_ids = position_ids[:, -sequence:]
         cos, sin = self.rotary_emb(position_ids, hidden_states.dtype)
-        for layer in self.layers:
-            hidden_states = layer(hidden_states, cos, sin, attention_mask)
-        return self.norm(hidden_states)
+        next_key_values = []
+        for index, layer in enumerate(self.layers):
+            layer_past = None if past_key_values is None else past_key_values[index]
+            hidden_states, next_cache = layer(hidden_states, cos, sin, attention_mask, layer_past, use_cache)
+            if use_cache:
+                assert next_cache is not None
+                next_key_values.append(next_cache)
+        hidden_states = self.norm(hidden_states)
+        return (hidden_states, tuple(next_key_values)) if use_cache else hidden_states
 
 
 class QwenInt4ForCausalLM(nn.Module):
@@ -168,6 +228,18 @@ class QwenInt4ForCausalLM(nn.Module):
             if isinstance(module, QuantLinear):
                 module.packing = packing
 
-    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor | None = None) -> torch.Tensor:
-        hidden_states = self.model(input_ids, attention_mask=attention_mask)
-        return self.lm_head(hidden_states)
+    def forward(
+        self,
+        input_ids: torch.Tensor,
+        attention_mask: torch.Tensor | None = None,
+        past_key_values: PastKeyValues | None = None,
+        use_cache: bool = False,
+    ) -> torch.Tensor | tuple[torch.Tensor, PastKeyValues]:
+        output = self.model(
+            input_ids, attention_mask=attention_mask,
+            past_key_values=past_key_values, use_cache=use_cache,
+        )
+        if not use_cache:
+            return self.lm_head(output)
+        hidden_states, next_key_values = output
+        return self.lm_head(hidden_states), next_key_values

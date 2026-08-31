@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "phase": "E",
+  "primitive": "canonical_asymmetric_w4g64_dequantization",
+  "status": "correctness_passed",
+  "observed_at": "2026-08-31",
+  "contract": {
+    "packing": "canonical_low_nibble_k_even_high_nibble_k_odd",
+    "group_size": 64,
+    "formula": "(signed_code - signed_zero) * scale",
+    "qweight_dtype": "torch.uint8",
+    "scales_dtype": "torch.float16",
+    "zeros_dtype": "torch.uint8",
+    "output_dtype": "torch.float32"
+  },
+  "validation": {
+    "environment_report": "results/phase_e_triton_environment_v1.json",
+    "unpack_evidence": "results/phase_e_triton_unpack_v1.json",
+    "test_path": "tests/test_triton_unpack.py",
+    "command": "PYTHONPATH=src python -m pytest tests/test_triton_unpack.py",
+    "result": "8 passed",
+    "reference": "qwen_int4.quantization.dequantize_groupwise",
+    "comparison": {
+      "dtype": "float32",
+      "rtol": 0.0,
+      "atol": 0.0
+    },
+    "shapes": [
+      [3, 64],
+      [5, 128],
+      [256, 1536]
+    ]
+  },
+  "limitations": [
+    "No matrix multiplication or bias addition was executed.",
+    "No autotuning or performance benchmark was executed.",
+    "This evidence does not establish end-to-end model parity."
+  ]
+}

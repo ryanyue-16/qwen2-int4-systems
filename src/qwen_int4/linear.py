@@ -5,7 +5,12 @@ from __future__ import annotations
 import torch
 from torch import nn
 
-from .backends import SUPPORTED_BACKENDS, lpu_functional_linear, torch_reference_linear
+from .backends import (
+    SUPPORTED_BACKENDS,
+    lpu_functional_linear,
+    torch_reference_linear,
+    triton_w4g64_linear,
+)
 from .quantization import PackingFormat
 
 
@@ -52,6 +57,7 @@ class QuantLinear(nn.Module):
         implementation = {
             "torch": torch_reference_linear,
             "lpu": lpu_functional_linear,
+            "triton": triton_w4g64_linear,
         }[self.backend]
         return implementation(
             x,

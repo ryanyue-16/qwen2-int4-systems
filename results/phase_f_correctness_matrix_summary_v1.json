@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "phase": "F",
+  "status": "passed",
+  "observed_at": "2026-08-31",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "remote_full_report": {
+    "path": "results/phase_f_correctness_matrix_v1.json",
+    "sha256": "b41b5b6128624f005cda546b114b9f2262c22782821f6984fabfc2fcdf98ef96"
+  },
+  "max_new_tokens": 4,
+  "cases_total": 11,
+  "generation_exact_cases": 11,
+  "minimum_logits_cosine": 0.999700665473938,
+  "logits_cosine_gate_min": 0.9997,
+  "case_ids": [
+    "en_explanation_kv_cache",
+    "en_explanation_reproducibility",
+    "zh_explanation_quantization",
+    "zh_explanation_experiment",
+    "python_fibonacci",
+    "python_safe_mean",
+    "arithmetic_total",
+    "arithmetic_remaining",
+    "logic_order",
+    "long_context_english_retrieval",
+    "long_context_chinese_retrieval"
+  ],
+  "limitations": [
+    "The matrix uses deterministic greedy generation with four new tokens per case.",
+    "The hybrid backend retains the explicit FP32 PyTorch fallback.",
+    "This is correctness evidence, not a performance benchmark."
+  ]
+}

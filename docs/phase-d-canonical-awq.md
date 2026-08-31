@@ -2,106 +2,78 @@
 
 ## Status
 
-Phase D has started in the permitted CPU-testable mode. The implementation
-status is `awaiting_gpu_reference`. No checkpoint weight file, reference-quality
-comparison, Phase C pass, or GPU-performance claim exists yet.
+Phase D is complete for correctness and quality gating. Canonical AWQ v6 is
+the frozen W4G64 asymmetric candidate for Phase E correctness work. Its model
+weights remain on the NVIDIA host and are not committed to this repository.
+This decision does not make a CUDA, Triton, LPU, or performance claim.
 
-The implementation follows the official
-[AWQ paper](https://proceedings.mlsys.org/paper_files/paper/2024/file/42a452cbafa9dd64e9ba4aa95cc1ef21-Paper-Conference.pdf)
-and uses the official
-[MIT Han Lab implementation](https://github.com/mit-han-lab/llm-awq) as an
-algorithm reference. AWQ uses activation statistics to search per-channel
-scales, applies function-equivalent parameter transforms, and then performs
-weight quantization and clipping. The existing activation-weighted clipping
-baseline remains separately named and is not treated as AWQ.
+The selected artifact is identified by SHA-256
+`131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6`.
+Its remote checkpoint location and all evidence hashes are recorded in
+`artifacts/qwen2-1.5b-w4g64-awq-canonical-v6/manifest.json`.
 
-## Implemented CPU foundation
+## Selected recipe and results
 
-- memory-bounded activation mean, second-moment, and sample collection;
-- sequential block calibration with hooks removed after every block;
-- Qwen2 mappings for RMSNorm to Q/K/V, V to O, RMSNorm to gate/up, and up to down;
-- GQA-aware V-scale expansion across repeated key/value heads;
-- per-channel scale search with optional duo scaling and 20-point-grid support;
-- candidate evaluation from immutable weight copies;
-- state snapshots which restore parameters even when a candidate raises;
-- function-equivalent Norm-to-Linear and Linear-to-Linear scale migration;
-- function-equivalent Qwen2 SwiGLU up-to-down migration;
-- activation-weighted per-output, per-group clipping search;
-- asymmetric group-wise INT4 RTN used by search and export;
-- canonical signed packing for both weights and per-group zero points;
-- PyTorch and LPU functional support for asymmetric zero points;
-- versioned canonical export metadata and fail-closed serialization;
-- loading of migrated LayerNorm weights and V-projection biases from AWQ artifacts.
+All canonical experiments used the pinned Qwen2-1.5B revision and held-out
+WikiText-2 test tokens. V6 changed the selected format to W4G64 asymmetric;
+v7 was the final targeted ablation and was rejected. No further blind
+re-quantization is planned.
 
-## Transformation contracts
+| Variant | Format | 2K WikiText-2 PPL ratio | Decision |
+| --- | --- | ---: | --- |
+| v4 | W4G128 asymmetric | 1.06304 | Rejected |
+| v5 | W4G128 asymmetric | 1.07298 | Rejected |
+| **v6** | **W4G64 asymmetric** | **1.049220** | **Selected** |
+| v7 | W4G64 asymmetric, attention-output objective | 1.054951 | Rejected |
 
-For a normalization output consumed by one or more linear layers, channel scale
-`s` is migrated as:
+V6 also passed the final three-model Phase C protocol: its full WikiText-2
+perplexity ratio was `1.037654`, and its independent Chinese-corpus ratio was
+`1.039845`, both below the `1.05` limit. All reported metrics were finite.
 
-```text
-norm.weight' = norm.weight / s
-linear.weight' = linear.weight * s
-```
+## Equivalence and generation review
 
-For two consecutive compatible linear paths:
+The final Qwen implementation uses the same SDPA attention behavior as the HF
+reference. The final-logits cosine for the selected v6 checkpoint is
+`0.9997767806053162`, above the frozen `0.9997` gate. This gate is explicitly
+about final logits; it is not a claim that every intermediate tensor is exact.
 
-```text
-source.weight' = source.weight / s
-source.bias' = source.bias / s
-target.weight' = target.weight * s
-```
+All 11 deterministic Phase C generation cases were manually reviewed. There
+were no empty continuations or replacement characters. Some continuations
+diverge from BF16 and include local repetition or logic degradation; this is
+recorded rather than hidden. These base-model smoke cases are not an
+instruction-following or semantic-equivalence benchmark.
 
-The second relation remains exact for the Qwen2 SwiGLU up path because the up
-activation is multiplied elementwise by the unchanged gate activation before
-the down projection. For GQA, each V-head scale is repeated in the exact head
-order used before the O projection.
+## Phase E handoff
 
-## Canonical asymmetric format
+Phase E may begin with correctness-only work against the frozen v6 manifest:
+packed-weight decoding, operator equivalence, and fail-closed artifact loading.
+Performance optimization, benchmarking, and any Triton/CUDA/LPU claim remain
+blocked until their separate documented gates pass.
 
-The planned artifact is W4G128 asymmetric. Logical codes and zero points are
-computed in `[0, 15]`, shifted by eight, and stored as signed INT4 values in the
-existing canonical byte order:
+## Phase E correctness contract
 
-```text
-dequantized_weight = (signed_code - signed_zero) * scale
-```
+The repository now provides a fail-closed v6 contract validator. It verifies
+the frozen manifest identity and Phase E restriction, every local evidence
+checksum, and, when given a local copy of the remote checkpoint, its exact
+size, SHA-256, and required safetensors metadata. It never downloads, writes,
+or regenerates model weights.
 
-The new format version is `qwen-int4-awq-v1`. It does not change or migrate the
-frozen `qwen-int4-v1` W4G64 RTN checkpoint. A Phase D artifact additionally owns
-the migrated LayerNorm parameters and V-projection biases needed by its weight
-transform. Loading those tensors from the original HF snapshot would silently
-break equivalence, so the loader requires them for the AWQ format.
-
-## Local validation
-
-Run the contract validator:
+Run the repository-only validation with:
 
 ```bash
-PYTHONPATH=src python scripts/validate_awq_canonical.py
+PYTHONPATH=src python scripts/validate_canonical_awq_v6.py
 ```
 
-Run the full CPU suite:
+On the NVIDIA host, pass the remote checkpoint path explicitly to additionally
+validate its bytes and metadata:
 
 ```bash
-PYTHONPATH=src python -m pytest
+PYTHONPATH=src python scripts/validate_canonical_awq_v6.py \
+  --checkpoint /root/autodl-tmp/qwen2-int4-systems/artifacts/qwen2-1.5b-w4g64-awq-canonical-v6-gpu-r1/model.safetensors
 ```
 
-The tests cover calibration memory bounds, sequential hook cleanup, scale-search
-state safety, Norm/QKV equivalence, V/O GQA equivalence, SwiGLU equivalence,
-clipping shapes, asymmetric packing/dequantization, backend agreement, export
-metadata, transformed-state loading, and overwrite refusal.
-
-## Remaining gates
-
-The following work remains before Phase D can be completed:
-
-1. connect the primitives into an end-to-end Qwen2 sequential calibration run;
-2. run the mature Phase B AWQ reference on NVIDIA Linux;
-3. generate a new versioned canonical AWQ checkpoint without replacing RTN v4;
-4. perform per-layer weight and activation validation on the full model;
-5. run all four Phase C rows on one NVIDIA host;
-6. require canonical AWQ to be no worse than W4G64 RTN and target no more than a
-   1% relative perplexity gap from the external AWQ reference;
-7. freeze the checkpoint contract only after every quality gate passes.
-
-Phase E remains blocked until these items are complete.
+The Phase E tests cover canonical signed-nibble decoding, per-group asymmetric
+scales and zero points, transformed norm-to-linear parameters, malformed
+metadata rejection, and reference-equivalent operators at Qwen2 attention
+projection shapes. These are artifact and numerical-correctness checks only;
+they do not measure or imply kernel performance.

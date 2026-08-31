@@ -9,6 +9,10 @@ import torch
 from safetensors import safe_open
 from safetensors.torch import load_file
 
+from .artifact_contract import (
+    CanonicalAWQV6Contract,
+    validate_canonical_awq_v6_checkpoint,
+)
 from .quantization import PackingFormat
 from .export import AWQ_FORMAT_VERSION, AWQ_TRANSFORMED_SUFFIXES
 
@@ -112,6 +116,28 @@ def load_quantized_checkpoint(model: torch.nn.Module, path: str | Path) -> LoadR
             + ", ".join(nonzero_zero_points)
         )
     return LoadReport(len(load_tensors), len(checkpoint) - len(load_tensors))
+
+
+def load_canonical_awq_v6_checkpoint(
+    model: torch.nn.Module,
+    path: str | Path,
+    contract: CanonicalAWQV6Contract,
+) -> LoadReport:
+    """Fail closed on v6 bytes and metadata before loading quantized tensors."""
+    validate_canonical_awq_v6_checkpoint(path, contract)
+    incompatible_layers = [
+        name
+        for name, module in model.named_modules()
+        if hasattr(module, "qweight")
+        and (getattr(module, "group_size", None) != contract.group_size
+             or getattr(module, "packing", None) is not PackingFormat.CANONICAL)
+    ]
+    if incompatible_layers:
+        raise RuntimeError(
+            "model does not satisfy canonical AWQ v6 W4G64 packing: "
+            + ", ".join(incompatible_layers)
+        )
+    return load_quantized_checkpoint(model, path)
 
 
 def extract_non_quantized_state(hf_model: torch.nn.Module, target_model: torch.nn.Module) -> dict[str, torch.Tensor]:

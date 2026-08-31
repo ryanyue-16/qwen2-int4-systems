@@ -18,6 +18,7 @@ from qwen_int4.checkpoint import (
     group_size_from_checkpoint,
     packing_from_checkpoint,
 )
+from qwen_int4.export import AWQ_TRANSFORMED_SUFFIXES
 from qwen_int4.model import QwenInt4ForCausalLM
 from qwen_int4.provenance import HF_MODEL_ID, HF_MODEL_REVISION, HF_TOKENIZER_REVISION
 from qwen_int4.quantization import PackingFormat, dequantize_groupwise
@@ -77,6 +78,7 @@ def replace_hf_linear_weights_with_dequantized(
     packing: PackingFormat,
 ) -> None:
     modules = dict(hf_model.named_modules())
+    parameters = dict(hf_model.named_parameters())
     with safe_open(checkpoint, framework="pt", device="cpu") as handle:
         qweight_keys = [key for key in handle.keys() if key.endswith(".qweight")]
         for qweight_key in qweight_keys:
@@ -95,6 +97,14 @@ def replace_hf_linear_weights_with_dequantized(
                 packing=packing,
             )
             weight.data.copy_(restored.to(weight.dtype))
+        transformed_keys = [
+            key for key in handle.keys() if key.endswith(AWQ_TRANSFORMED_SUFFIXES)
+        ]
+        for key in transformed_keys:
+            if key not in parameters:
+                raise KeyError(f"transformed checkpoint parameter is missing from HF model: {key}")
+            parameter = parameters[key]
+            parameter.data.copy_(handle.get_tensor(key).to(parameter.dtype))
 
 
 def print_weight_results(results: dict) -> None:

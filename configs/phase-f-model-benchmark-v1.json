@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "phase": "F",
+  "status": "correctness_gates_passed_benchmark_authorized",
+  "artifact_id": "qwen2-1.5b-w4g64-awq-canonical-v6",
+  "checkpoint_sha256": "131a020962efc4e236b17fbd7da02f4aa9914e4c88a07b647e8cfe47dcaecab6",
+  "backends": ["torch", "triton"],
+  "backend_interpretation": {
+    "torch": "canonical PyTorch dequantize-then-matmul reference",
+    "triton": "hybrid backend: FP16/BF16 W4G64 Triton and FP32 SwiGLU down-projection PyTorch fallback"
+  },
+  "seed": 20260831,
+  "warmup_iterations": 2,
+  "measurement_iterations": 5,
+  "profiles": [
+    {"name": "batch1_short", "batch_size": 1, "prompt_tokens": 16, "new_tokens": 4},
+    {"name": "batch1_context", "batch_size": 1, "prompt_tokens": 128, "new_tokens": 4},
+    {"name": "batch4_short", "batch_size": 4, "prompt_tokens": 16, "new_tokens": 4}
+  ],
+  "metrics": [
+    "prefill_p50_p95_p99_ms",
+    "single_token_decode_p50_p95_p99_ms",
+    "cached_generation_p50_p95_p99_ms",
+    "cached_generation_tokens_per_second",
+    "peak_allocated_memory_bytes"
+  ],
+  "timing": {
+    "clock": "torch.cuda.Event",
+    "synchronize_before_series": true,
+    "synchronize_each_measurement": true,
+    "tokenization_included": false,
+    "model_loading_included": false
+  }
+}

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Callable, Iterable
 
 import torch
 import torch.nn.functional as F
@@ -78,7 +78,8 @@ def search_awq_scales(
         raise ValueError("at least one linear module is required")
     if grid_points < 2:
         raise ValueError("grid_points must be at least two")
-    flat = inputs.detach().to(device="cpu", dtype=torch.float32).reshape(
+    search_device = inputs.device
+    flat = inputs.detach().to(device=search_device, dtype=torch.float32).reshape(
         -1, inputs.shape[-1]
     )
     in_features = flat.shape[-1]
@@ -87,11 +88,14 @@ def search_awq_scales(
     if any(linear.in_features != in_features for linear in linears):
         raise ValueError("all searched linears must consume the same input channels")
 
-    weights = [linear.weight.detach().to(device="cpu", dtype=torch.float32) for linear in linears]
+    weights = [
+        linear.weight.detach().to(device=search_device, dtype=torch.float32)
+        for linear in linears
+    ]
     biases = [
         None
         if linear.bias is None
-        else linear.bias.detach().to(device="cpu", dtype=torch.float32)
+        else linear.bias.detach().to(device=search_device, dtype=torch.float32)
         for linear in linears
     ]
     references = [F.linear(flat, weight, bias) for weight, bias in zip(weights, biases)]
@@ -139,6 +143,174 @@ def search_awq_scales(
     )
 
 
+@torch.no_grad()
+def search_awq_scales_by_module_output(
+    input_batches: Iterable[torch.Tensor],
+    linears: Iterable[nn.Linear],
+    forward_batch: Callable[[int, torch.Tensor], torch.Tensor],
+    *,
+    group_size: int = 128,
+    grid_points: int = 20,
+    duo_scaling: bool = True,
+) -> AWQScaleSearchResult:
+    """Search input-channel scales against a containing module's output error."""
+
+    batches = tuple(input_batches)
+    linears = tuple(linears)
+    if not batches:
+        raise ValueError("at least one input batch is required")
+    if not linears:
+        raise ValueError("at least one linear module is required")
+    if grid_points < 2:
+        raise ValueError("grid_points must be at least two")
+    search_device = batches[0].device
+    if any(batch.device != search_device for batch in batches):
+        raise ValueError("all input batches must use the same device")
+    in_features = batches[0].shape[-1]
+    if in_features % group_size:
+        raise ValueError("input channels must be divisible by group size")
+    if any(batch.shape[-1] != in_features for batch in batches):
+        raise ValueError("all input batches must have the same channel dimension")
+    if any(linear.in_features != in_features for linear in linears):
+        raise ValueError("all searched linears must consume the same input channels")
+
+    weights = [linear.weight.detach().clone() for linear in linears]
+    flat = torch.cat(
+        [batch.detach().to(torch.float32).reshape(-1, in_features) for batch in batches],
+        dim=0,
+    )
+    activation_mean = flat.abs().mean(dim=0)
+    weight_mean = torch.cat(
+        [weight.to(device=search_device, dtype=torch.float32) for weight in weights],
+        dim=0,
+    ).abs().mean(dim=0)
+    references = [forward_batch(index, batch).detach().to(torch.float32) for index, batch in enumerate(batches)]
+
+    def evaluate(scales: torch.Tensor) -> float:
+        for linear, weight in zip(linears, weights):
+            candidate = fake_quantize_asymmetric(
+                weight.to(device=search_device, dtype=torch.float32)
+                * scales.view(1, -1),
+                group_size=group_size,
+            ) / scales.view(1, -1)
+            linear.weight.copy_(candidate.to(dtype=linear.weight.dtype))
+        squared_error = 0.0
+        elements = 0
+        for index, (batch, reference) in enumerate(zip(batches, references)):
+            candidate_output = forward_batch(index, batch).to(torch.float32)
+            squared_error += (candidate_output - reference).square().sum().item()
+            elements += reference.numel()
+        return squared_error / elements
+
+    try:
+        identity_scales = torch.ones(
+            in_features, device=search_device, dtype=torch.float32
+        )
+        identity_loss = evaluate(identity_scales)
+        best_loss = identity_loss
+        best_ratio = 0.0
+        best_scales = identity_scales.clone()
+        for index in range(grid_points):
+            ratio = index / (grid_points - 1)
+            scales = _candidate_scales(
+                activation_mean, weight_mean, ratio, duo_scaling=duo_scaling
+            )
+            loss = evaluate(scales)
+            if loss < best_loss:
+                best_loss = loss
+                best_ratio = ratio
+                best_scales = scales.clone()
+    finally:
+        for linear, weight in zip(linears, weights):
+            linear.weight.copy_(weight)
+
+    return AWQScaleSearchResult(
+        scales=best_scales,
+        ratio=best_ratio,
+        loss=best_loss,
+        identity_loss=identity_loss,
+    )
+
+
+def search_gqa_v_to_o_scales(
+    inputs: torch.Tensor,
+    output_projection: nn.Linear,
+    *,
+    num_attention_heads: int,
+    num_key_value_heads: int,
+    group_size: int = 128,
+    grid_points: int = 20,
+    duo_scaling: bool = True,
+) -> AWQScaleSearchResult:
+    """Search V-to-O scales constrained to Qwen2's repeated GQA head layout."""
+
+    if num_attention_heads % num_key_value_heads:
+        raise ValueError("attention heads must be divisible by key/value heads")
+    search_device = inputs.device
+    flat = inputs.detach().to(device=search_device, dtype=torch.float32).reshape(
+        -1, inputs.shape[-1]
+    )
+    if flat.shape[1] != output_projection.in_features:
+        raise ValueError("GQA inputs must match the output projection input size")
+    if output_projection.in_features % num_attention_heads:
+        raise ValueError("output projection input size must divide attention heads")
+    if output_projection.in_features % group_size:
+        raise ValueError("output projection input size must divide group size")
+    if grid_points < 2:
+        raise ValueError("grid_points must be at least two")
+
+    repeats = num_attention_heads // num_key_value_heads
+    head_dim = output_projection.in_features // num_attention_heads
+    base_channels = num_key_value_heads * head_dim
+    weight = output_projection.weight.detach().to(
+        device=search_device, dtype=torch.float32
+    )
+    bias = (
+        None
+        if output_projection.bias is None
+        else output_projection.bias.detach().to(
+            device=search_device, dtype=torch.float32
+        )
+    )
+    reference = F.linear(flat, weight, bias)
+    activation_mean = flat.abs().reshape(-1, num_key_value_heads, repeats, head_dim)
+    activation_mean = activation_mean.mean(dim=(0, 2)).reshape(base_channels)
+    weight_mean = weight.abs().mean(dim=0).reshape(
+        num_key_value_heads, repeats, head_dim
+    )
+    weight_mean = weight_mean.mean(dim=1).reshape(base_channels)
+
+    def expand(values: torch.Tensor) -> torch.Tensor:
+        return values.reshape(num_key_value_heads, head_dim).repeat_interleave(
+            repeats, dim=0
+        ).reshape(-1)
+
+    identity = F.linear(
+        flat, fake_quantize_asymmetric(weight, group_size=group_size), bias
+    )
+    identity_loss = (identity - reference).square().mean().item()
+    best_loss = identity_loss
+    best_ratio = 0.0
+    best_scales = torch.ones(base_channels)
+    for index in range(grid_points):
+        ratio = index / (grid_points - 1)
+        scales = _candidate_scales(
+            activation_mean, weight_mean, ratio, duo_scaling=duo_scaling
+        )
+        expanded = expand(scales)
+        candidate = F.linear(
+            flat / expanded.view(1, -1),
+            fake_quantize_asymmetric(weight * expanded.view(1, -1), group_size=group_size),
+            bias,
+        )
+        loss = (candidate - reference).square().mean().item()
+        if loss < best_loss:
+            best_loss = loss
+            best_ratio = ratio
+            best_scales = scales.clone()
+    return AWQScaleSearchResult(best_scales, best_ratio, best_loss, identity_loss)
+
+
 def search_groupwise_clipping(
     weight: torch.Tensor,
     inputs: torch.Tensor,
@@ -157,10 +329,11 @@ def search_groupwise_clipping(
 
     out_features, in_features = weight.shape
     groups = in_features // group_size
-    grouped = weight.detach().to(device="cpu", dtype=torch.float32).reshape(
+    search_device = inputs.device
+    grouped = weight.detach().to(device=search_device, dtype=torch.float32).reshape(
         out_features, groups, group_size
     )
-    flat_inputs = inputs.detach().to(device="cpu", dtype=torch.float32).reshape(
+    flat_inputs = inputs.detach().to(device=search_device, dtype=torch.float32).reshape(
         -1, in_features
     )
     importance = flat_inputs.square().mean(dim=0).clamp_min(1e-12)
