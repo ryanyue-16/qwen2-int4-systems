@@ -5,7 +5,9 @@ canonical INT4 contract and an LPU-style dataflow. It does not contain a real
 LPU runtime or enough specification to support bit-accurate or cycle-accurate
 claims.
 
-The current `lpu_functional_linear` implementation models:
+The authoritative Phase G scope and algorithm are documented in
+[`../phase-g-lpu-emulation.md`](../phase-g-lpu-emulation.md). The current
+`lpu_functional_linear` implementation models:
 
 - K-streaming group traversal;
 - activation and weight tiles;
@@ -25,7 +27,7 @@ Internal reference diagrams are intentionally excluded from the public Git
 repository. A future public architecture document should use independently
 created English diagrams derived only from publishable interface contracts.
 
-## Planned public interface boundary
+## Public analytical interface boundary
 
 ```mermaid
 flowchart LR
@@ -35,8 +37,9 @@ flowchart LR
     B --> C
     C --> D["PE-level multiply and accumulation"]
     D --> E["FP32 partial sums"]
-    E --> F["Output conversion and optional bias"]
+    E --> F["Bias epilogue and output conversion"]
 ```
 
-The checkpoint packing, group size, scale layout, zero-point rule, and output
-tolerance must be frozen before a Triton or real-LPU backend is implemented.
+The checkpoint packing, group size, scale layout, zero-point rule, and emulator
+output tolerances are frozen for this mapping. A real-LPU backend would still
+require its own compiler/runtime contract and device-side validation.

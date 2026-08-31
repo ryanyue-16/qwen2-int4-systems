@@ -5,16 +5,17 @@ inference research. The repository currently provides:
 
 - an explicitly versioned packed INT4 checkpoint contract;
 - a PyTorch numerical reference backend;
-- an LPU-style K-streaming functional backend;
+- a fail-closed canonical W4G64 LPU-style functional emulator;
 - explicit backend selection without import-time environment variables;
 - Qwen2 RMSNorm, RoPE, GQA, causal attention, SwiGLU, and CausalLM components;
 - checkpoint inspection, packing validation, quality evaluation, and tests;
 - a frozen W4G64 RTN baseline for historical AWQ comparisons;
 - a frozen canonical W4G64 asymmetric AWQ v6 candidate for correctness work.
 
-Triton kernels, KV caching, and performance claims are intentionally out of
-scope until the AWQ checkpoint contract and quality gate are frozen. The current
-LPU backend is a functional model, not a real hardware runtime.
+The repository includes a validated hybrid Triton/PyTorch GPU inference path,
+KV caching, and reproducible Phase F measurements for the documented RTX 4090
+environment. It is not an all-Triton model or a production performance claim.
+The current LPU backend is a functional emulator, not a real hardware runtime.
 
 ## Current baseline
 
@@ -208,6 +209,19 @@ work; it does not authorize performance claims.
 
 See [Phase D canonical AWQ](docs/phase-d-canonical-awq.md).
 
+## LPU functional emulation
+
+Phase G maps the frozen canonical W4G64 linear contract to an analytical
+A/B/C-buffer dataflow and validates an LPU-style K-group streaming emulator.
+The emulator rejects incompatible packing, group sizes, shapes, dtypes, and
+scale metadata. Its deterministic CPU tests cover numerical parity, activation
+edges, asymmetric zero-point boundaries, AWQ-transformed-compatible inputs,
+backend dispatch, and a multi-layer functional smoke path.
+
+This work does not model cycles, hardware bits, physical buffer capacities,
+bandwidth, compiler compatibility, or real LPU execution and performance. See
+[Phase G LPU functional emulation](docs/phase-g-lpu-emulation.md).
+
 ## Inspect the checkpoint
 
 ```bash
@@ -225,8 +239,9 @@ PYTHONPATH=src python -m pytest
 ```
 
 The suite covers canonical and legacy pack/unpack behavior, raw byte layout,
-group-scale indexing, fail-closed zero-point handling, quality metrics, and
-elementwise agreement between the PyTorch and LPU-style functional backends.
+group-scale indexing, fail-closed zero-point handling, quality metrics, Triton
+correctness gates where supported, and deterministic PyTorch/LPU functional
+parity and rejection behavior.
 
 ## Run an inference smoke test
 
@@ -251,8 +266,8 @@ PYTHONPATH=src python -m qwen_int4.cli \
   --device cpu
 ```
 
-Generation currently recomputes the full prefix for every new token because KV
-caching is not implemented. This path is for correctness checks, not benchmarks.
+Generation supports the correctness-tested KV-cache path described in the Phase
+F documentation. The command above remains a smoke test, not a benchmark.
 
 ## Checkpoint format
 
@@ -291,11 +306,12 @@ experimentation.
 
 ## Scope and non-claims
 
-- No Triton kernel is implemented in the current phase.
-- No KV cache or optimized prefill/decode split is implemented.
+- The complete inference model is hybrid Triton/PyTorch, not all-Triton.
+- Phase F measurements apply only to the recorded RTX 4090 software and profile
+  configuration and must not be extrapolated to production or other hardware.
 - macOS CPU timings must not be presented as NVIDIA or LPU performance.
-- The LPU-style Python backend is not bit-accurate, cycle-accurate, or a real
-  hardware runtime.
+- The LPU-style Python backend is not bit-accurate, cycle-accurate, a real
+  hardware runtime, or real-LPU correctness or performance evidence.
 - External AWQ formats must not be assumed to match the canonical packing used
   by this repository.
 

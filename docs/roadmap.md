@@ -81,11 +81,18 @@ Phase F correctness and benchmark boundaries are documented in
 `docs/phase-f-inference.md`; final evidence is summarized in
 `docs/phase-f-report.md`.
 
-## Phase G — LPU mapping and enterprise delivery
+## Phase G — LPU functional emulation and analytical mapping
 
-- [ ] Map the validated computation to an explicitly documented LPU dataflow.
-- [ ] Add artifact registry, CI, nightly regression, and dashboard workflows.
-- [ ] Define release evidence, ownership, and operational safeguards.
+- [x] Define the PyTorch, Triton GPU, LPU emulator, analytical mapping, and
+  real-LPU validation boundaries.
+- [x] Map frozen canonical W4G64 tensors to an analytical A/B/C-buffer dataflow.
+- [x] Make the functional emulator fail closed on incompatible contracts and
+  malformed metadata.
+- [x] Add deterministic CPU parity, edge-case, rejection, dispatch, and
+  multi-layer smoke tests.
+- [x] Document numerical tolerances, non-goals, and future real-LPU requirements.
 
-Phase G may not claim real-LPU performance until a separately validated runtime
-and measurement protocol exist.
+Phase G is complete only as an analytical/emulation extension. It does not add
+artifact governance, nightly infrastructure, dashboards, a real compiler or
+runtime integration, real-LPU correctness, or real-LPU performance. See
+`docs/phase-g-lpu-emulation.md`.
